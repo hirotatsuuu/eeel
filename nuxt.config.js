@@ -24,6 +24,12 @@ export default {
     ]
   },
 
+  /**
+   * Middleware setting
+   */
+  router: {
+  },
+
   /*
   ** Customize the progress-bar color
   */
@@ -41,7 +47,8 @@ export default {
   */
   plugins: [
     '@/plugins/vuetify',
-    '@/plugins/firebase.js'
+    '@/plugins/firebase.js',
+    { src: "~plugins/persistedstate.js", ssr: false }
   ],
 
   /*

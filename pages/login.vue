@@ -1,0 +1,93 @@
+<template>
+  <div>
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4>
+          <v-card>
+            <v-toolbar color="primary">
+              <v-toolbar-title>eeel</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form>
+                <v-text-field
+                  v-model="email"
+                  :rules="emailRules"
+                  :counter="10"
+                  label="email"
+                  prepend-icon="email"
+                ></v-text-field>
+                <v-text-field
+                  v-model="password"
+                  :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                  :type="show_password ? 'text' : 'password'"
+                  label="password"
+                  prepend-icon="lock"
+                  @click:append="show_password = !show_password"
+                ></v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                flat
+                v-on:click="signup"
+              >SIGNUP</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                v-on:click="login"
+              >LOGIN</v-btn>
+            </v-card-actions>
+            <hr>
+            <v-spacer></v-spacer>
+            <v-btn
+              flat
+              v-on:click="resetPassword"
+            >パスワードを忘れたかたはこちら</v-btn>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
+</template>
+
+<script>
+import firebase from '~/plugins/firebase'
+import { mapActions, mapState, mapGetters } from 'vuex'
+
+export default {
+  // middleware: 'authenticated',
+  data() {
+    return {
+      email: 'jjj@jjj.jj',
+      password: 'jjjjjj',
+      show_password: false,
+    }
+  },
+  computed: {
+    ...mapState(['user']),
+    ...mapGetters(['isAuthenticated'])
+  },
+  mounted() {
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   console.log('user', user.uid, user.email)
+    //   this.isAuthenticated
+    // })
+  },
+  methods : {
+    login() {
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+      .then(user => {
+        this.$store.dispatch('user/setUser', user)
+        this.$router.push("/")
+      }).catch((error) => {
+        alert(error)
+      });
+    },
+    signup() {
+      this.$router.push("/signup")
+    },
+    resetPassword() {
+      this.$router.push("/reset-password")
+    }
+  }
+}
+</script>
