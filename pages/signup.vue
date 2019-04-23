@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div style="margin-top: 100px;">
     <v-container fluid fill-height>
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
           <v-card>
-            <v-toolbar dark color="primary">
+            <v-toolbar>
               <v-toolbar-title>Sign Up</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
@@ -33,17 +33,16 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-              <v-spacer></v-spacer>
               <v-btn
-                color="primary"
-                v-on:click="login"
+                flat
+                v-on:click="gotoLogin"
               >LOGIN</v-btn>
+              <v-spacer />
+              <v-btn
+                v-on:click="signup"
+              >SIGNUP</v-btn>
             </v-card-actions>
           </v-card>
-          <v-btn
-              color="primary"
-              v-on:click="signup"
-            >SIGNUP</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -54,10 +53,12 @@
 import firebase from '~/plugins/firebase'
 
 export default {
+  layout: 'footer',
   data() {
     return {
-      email: 'jjj@jjj.jj',
-      password: 'jjjjjj',
+      username: '',
+      email: '',
+      password: '',
       show_password: false,
     }
   },
@@ -65,10 +66,14 @@ export default {
     signup() {
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
       .then(user => {
-        this.$router.push("/member-page")
+        this.$store.dispatch('user/setUser', user)
+        this.$router.push("/")
       }).catch((error) => {
         alert(error)
       })
+    },
+    gotoLogin() {
+      this.$router.push("/login")
     }
   }
 }

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-container fluid fill-height>
+    <v-container fluid fill-height style="margin-top: 100px;">
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
           <v-card>
             <v-toolbar color="primary">
-              <v-toolbar-title>eeel</v-toolbar-title>
+              <v-toolbar-title>Login</v-toolbar-title>
             </v-toolbar>
             <v-card-text>
               <v-form>
@@ -29,7 +29,7 @@
             <v-card-actions>
               <v-btn
                 flat
-                v-on:click="signup"
+                v-on:click="gotoSignup"
               >SIGNUP</v-btn>
               <v-spacer></v-spacer>
               <v-btn
@@ -40,7 +40,7 @@
             <v-spacer></v-spacer>
             <v-btn
               flat
-              v-on:click="resetPassword"
+              v-on:click="gotoResetPassword"
             >パスワードを忘れたかたはこちら</v-btn>
           </v-card>
         </v-flex>
@@ -54,6 +54,7 @@ import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
+  layout: 'footer',
   // middleware: 'authenticated',
   data() {
     return {
@@ -66,12 +67,6 @@ export default {
     ...mapState(['user']),
     ...mapGetters(['isAuthenticated'])
   },
-  mounted() {
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   console.log('user', user.uid, user.email)
-    //   this.isAuthenticated
-    // })
-  },
   methods : {
     login() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
@@ -82,10 +77,10 @@ export default {
         alert(error)
       });
     },
-    signup() {
+    gotoSignup() {
       this.$router.push("/signup")
     },
-    resetPassword() {
+    gotoResetPassword() {
       this.$router.push("/reset-password")
     }
   }

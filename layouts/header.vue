@@ -20,7 +20,9 @@
         <v-icon>mail</v-icon>
       </v-btn>
       <v-spacer />
-      <v-toolbar-title><img src="/logo.png" alt="logo" style="height: 120px;"></v-toolbar-title>
+      <v-toolbar-title>
+        <img src="/logo.png" alt="logo" style="height: 35px;">
+      </v-toolbar-title>
       <v-spacer />
       <v-btn
         icon
@@ -43,7 +45,46 @@
         <nuxt />
       </v-container>
     </v-content>
+    <v-footer
+      height="auto"
+      light
+    >
+      <v-layout
+        justify-center
+        row
+        wrap
+      >
+        <v-btn
+          v-for="link in links"
+          :key="link"
+          flat
+          round
+        >
+          {{ link }}
+        </v-btn>
+        <v-flex
+          lighten-2
+          py-3
+          text-xs-center
+          xs12
+        >
+          <img src="/logo.png" alt="logo" style="height: 35px;">
+        </v-flex>
+      </v-layout>
+    </v-footer>
   </v-app>
 </template>
 
-
+<script>
+  export default {
+    data: () => ({
+      links: [
+        'eeelについて',
+        'ガイドライン',
+        'プライバシーポリシー',
+        '利用規約',
+        'Twitter'
+      ]
+    })
+  }
+</script>
