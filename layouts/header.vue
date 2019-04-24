@@ -54,14 +54,6 @@
         row
         wrap
       >
-        <v-btn
-          v-for="link in links"
-          :key="link"
-          flat
-          round
-        >
-          {{ link }}
-        </v-btn>
         <v-flex
           lighten-2
           py-3
@@ -77,14 +69,6 @@
 
 <script>
   export default {
-    data: () => ({
-      links: [
-        'eeelについて',
-        'ガイドライン',
-        'プライバシーポリシー',
-        '利用規約',
-        'Twitter'
-      ]
-    })
+
   }
 </script>
