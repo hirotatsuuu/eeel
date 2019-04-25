@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import firebase from '~/plugins/firebase'
+import firebase, { db, storage } from '~/plugins/firebase'
 
 export default {
   layout: 'footer',
@@ -77,12 +77,29 @@ export default {
     login() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(user => {
-        this.$store.commit('user/setUser', {
-          uid: user.user.uid,
-          email: user.user.email,
-          username: user.user.username
-        })
-        this.$router.push("/")
+        db.collection('/users')
+          .doc(user.user.uid)
+          .get()
+          .then(doc => {
+            if (doc.exists) {
+              // doc.data() でデータを取得
+              const userSnapshot = doc.data()
+              console.log('userSnapshot', userSnapshot.username);
+              this.$store.commit('user/setUser', {
+                uid: user.user.uid,
+                email: user.user.email,
+                username: userSnapshot.username
+              })
+              this.$router.push("/")
+            } else {
+              console.log("No user");
+            }
+          })
+          .catch(function(error) {
+            console.log("Error : ", error);
+          })
+
+
       }).catch((error) => {
         alert(error)
       });

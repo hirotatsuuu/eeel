@@ -74,7 +74,7 @@
         >
       </v-btn>
       <v-btn
-        v-on:click="doCreatePost"
+        v-on:click="createPost"
         outline
         large
         color="red"
@@ -142,24 +142,12 @@ export default {
     })
   },
   methods: {
-    getPosts () {
-      const querySnapshot = db
-        .collection('posts')
-        .where('is_start', '==', true)
-        .onSnapshot(querySnapshot => {
-          var posts = [];
-          querySnapshot.forEach(doc => {
-            console.log('title: ', doc.data().title)
-            posts.push(doc.data().title);
-          });
-        });
-    },
-    doCreatePost() {
-      console.log('doCreatePost')
+    createPost() {
+      console.log('createPost')
       const post = {
         uid: this.$store.getters['user/user'].uid,
         username: this.$store.getters['user/user'].username,
-        img: this.img,
+        img_url: null,
         title: this.title,
         contents: this.contents,
         likes: null,
@@ -172,18 +160,21 @@ export default {
         created_at: getTimestamp(),
         update_at: getTimestamp(),
       }
+      console.log('this.imageFile', this.imageFile)
       db.collection("posts").add(post)
-        .then(function () {
-          console.log("create post")
+        .then((doc) => {
+          console.log("create post", doc.id, this.imageFile)
+          this.uploadImg(doc.id)
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log('error post: ', error)
         })
     },
-    uploadImg() {
-      console.log('uploadImg', this.file)
-      const uploadTask = storage.ref().child("users").child("profile").put(this.file[0])
-      uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+    uploadImg(pid) {
+      console.log('uploadImg', pid, this.imageFile)
+      console.log('this.imageFile', this.imageFile)
+      const uploadTask = storage.ref().child("users").child(pid).put(this.imageFile)
+      uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
         function(snapshot) {
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -215,10 +206,74 @@ export default {
         }
       }, function() {
         // Upload completed successfully, now we can get the download URL
-        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
           console.log('File available at', downloadURL);
+          // this.createPostImageUrl(downloadURL, pid)
+          const post = {
+            img_url: downloadURL,
+          }
+          db.collection("posts").doc(pid).set(post, {merge: true})
+            .then(function (doc) {
+              console.log("Create Post Fin!!!!!!!!!!!!!!!!", doc)
+            })
+            .catch(function (error) {
+              console.log('error post: ', error)
+            })
         });
       });
+    },
+    createPostImageUrl (image_url, pid) {
+      console.log('createPostImageUrl', image_url, pid)
+      const post = {
+        img_url: image_url,
+      }
+      db.collection("posts").doc(pid).update(post)
+        .then((doc) => {
+          console.log("Create Post Fin!!!!!!!!!!!!!!!!", doc)
+        })
+        .catch(function (error) {
+          console.log('error post: ', error)
+        })
+    },
+    getPosts () {
+      const querySnapshot = db
+        .collection('posts')
+        .where('is_start', '==', true)
+        .onSnapshot(querySnapshot => {
+          var posts = [];
+          querySnapshot.forEach(doc => {
+            console.log('title: ', doc.data().title)
+            posts.push(doc.data().title);
+          });
+        });
+    },
+    doCreatePost() {
+      console.log('doCreatePost')
+      this.uploadImg()
+      const post = {
+        uid: this.$store.getters['user/user'].uid,
+        username: this.$store.getters['user/user'].username,
+        imag_url: this.img,
+        sid: aaa,
+        title: this.title,
+        contents: this.contents,
+        likes: null,
+        comments: null,
+        comment_num: 0,
+        like_num: 0,
+        is_start: true,
+        is_fin: false,
+        is_hide: false,
+        created_at: getTimestamp(),
+        update_at: getTimestamp(),
+      }
+      db.collection("posts").add(post)
+        .then(function () {
+          console.log("create post")
+        })
+        .catch(function (error) {
+          console.log('error post: ', error)
+        })
     },
     onUpload (event) {
       console.log('onUpload', event)
@@ -259,7 +314,7 @@ export default {
       });
     },
     pickFile () {
-      this.$refs.image.click ()
+      this.$refs.image.click()
     },
     onFilePicked (e) {
       const files = e.target.files
@@ -273,6 +328,7 @@ export default {
         fr.addEventListener('load', () => {
           this.imageUrl = fr.result
           this.imageFile = files[0] // this is an image file that can be sent to server...
+          console.log('imageFile', this.imageFile)
         })
       } else {
         this.imageName = ''
