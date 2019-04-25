@@ -3,34 +3,28 @@
     <nuxt />
     <v-footer
       height="auto"
-      light
       fixed
     >
-      <v-layout
-        justify-center
-        row
-        wrap
-      >
-        <v-btn
-          v-for="link in links"
-          :key="link"
-          flat
-          round
-        >
-          {{ link }}
-        </v-btn>
-        <v-flex
-          lighten-2
-          py-3
-          text-xs-center
-          white--text
-          xs12
-        >
-          <span style="cursor: pointer;">
-            <img src="/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome">
-          </span>
-        </v-flex>
-      </v-layout>
+      <v-container mx-auto>
+        <v-layout wrap>
+          <v-flex xs9>
+            <v-btn
+              v-for="link in links"
+              :key="link.title"
+              :href="link.href"
+              class="ml-0 mr-3"
+              target="_blank"
+              flat
+            >
+              {{ link.title }}
+            </v-btn>
+          </v-flex>
+          <v-spacer />
+            <div style="cursor: pointer;">
+              <img src="/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
+            </div>
+        </v-layout>
+      </v-container>
     </v-footer>
   </div>
 </template>
@@ -39,11 +33,26 @@
   export default {
     data: () => ({
       links: [
-        'eeelについて',
-        'ガイドライン',
-        'プライバシーポリシー',
-        '利用規約',
-        'Twitter'
+        {
+          title: 'eeelについて',
+          url: '',
+        },
+        {
+          title: 'ガイドライン',
+          url: '',
+        },
+        {
+          title: 'プライバシーポリシー',
+          url: '',
+        },
+        {
+          title: '利用規約',
+          url: '',
+        },
+        {
+          title: 'Twitter',
+          url: '',
+        }
       ]
     }),
     methods: {

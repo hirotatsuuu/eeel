@@ -17,9 +17,10 @@ if (!firebase.apps.length) {
 const db = firebase.firestore()
 const settings = { timestampsInSnapshots: true }
 db.settings(settings)
-
 const getTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
 
-export { db, getTimestamp }
+const storage = firebase.storage();
+
+export { db, getTimestamp, storage }
 
 export default firebase
