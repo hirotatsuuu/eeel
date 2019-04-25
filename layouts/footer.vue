@@ -26,7 +26,9 @@
           white--text
           xs12
         >
-          <img src="/logo.png" alt="logo" style="height: 35px;">
+          <span style="cursor: pointer;">
+            <img src="/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome">
+          </span>
         </v-flex>
       </v-layout>
     </v-footer>
@@ -43,6 +45,11 @@
         '利用規約',
         'Twitter'
       ]
-    })
+    }),
+    methods: {
+      gotoHome() {
+        this.$router.push("/")
+      }
+    }
   }
 </script>

@@ -1,25 +1,51 @@
 <template>
   <div>
-    <h1>ログインしていないと見れないページ</h1>
-    <a href="/sample/account">アカウントページへ</a>
-    <v-btn
-      color="primary"
-      v-on:click="logout"
-    >LOGOUT</v-btn>
+    <div v-if="$store.getters['user/isAuthenticated']">
+      {{ $store.getters['user/user'] }}でログイン中
+    </div>
+    <div v-else>
+      ログインしましょう。
+    </div>
+    <v-layout
+      column
+      justify-center
+      align-center
+    >
+      <v-flex
+        xs12
+        sm8
+        md6
+      >
+        <div class="text-xs-center">
+          <h1>プロフィール</h1>
+          <v-btn
+            v-on:click="gotoSettings"
+          >設定</v-btn>
+        </div>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
+import firebase from '~/plugins/firebase'
+
 export default {
-  layout: 'home',
+  layout: 'header',
+  middleware: 'authenticated',
+  mounted() {
+    console.log('mounted')
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        this.$router.push("/login")
+      } else {
+        console.log('user', user.uid, user.email)
+      }
+    })
+  },
   methods: {
-    logout() {
-      firebase.auth().signOut()
-      .then(() => {
-        this.$store.dispatch('user/setUser', null)
-      }).catch((error) => {
-        alert(error)
-      })
+    gotoSettings() {
+      this.$router.push("/settings")
     }
   }
 }

@@ -11,8 +11,7 @@
               <v-form>
                 <v-text-field
                   v-model="email"
-                  :rules="emailRules"
-                  :counter="10"
+                  :counter="32"
                   label="email"
                   prepend-icon="email"
                 ></v-text-field>
@@ -20,6 +19,7 @@
                   v-model="password"
                   :append-icon="show_password ? 'visibility' : 'visibility_off'"
                   :type="show_password ? 'text' : 'password'"
+                  :counter="32"
                   label="password"
                   prepend-icon="lock"
                   @click:append="show_password = !show_password"
@@ -40,7 +40,7 @@
             <v-spacer></v-spacer>
             <v-btn
               flat
-              v-on:click="gotoResetPassword"
+              v-on:click="  gotoResetPassword"
             >パスワードを忘れたかたはこちら</v-btn>
           </v-card>
         </v-flex>
@@ -51,11 +51,10 @@
 
 <script>
 import firebase from '~/plugins/firebase'
-import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
   layout: 'footer',
-  // middleware: 'authenticated',
+  middleware: 'authenticated',
   data() {
     return {
       email: 'jjj@jjj.jj',
@@ -63,15 +62,26 @@ export default {
       show_password: false,
     }
   },
-  computed: {
-    ...mapState(['user']),
-    ...mapGetters(['isAuthenticated'])
+  mounted() {
+    console.log('mounted')
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        this.$router.push("/login")
+      } else {
+        console.log('user', user.uid, user.email)
+        this.$router.push("/")
+      }
+    })
   },
   methods : {
     login() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(user => {
-        this.$store.dispatch('user/setUser', user)
+        this.$store.commit('user/setUser', {
+          uid: user.user.uid,
+          email: user.user.email,
+          username: user.user.username
+        })
         this.$router.push("/")
       }).catch((error) => {
         alert(error)

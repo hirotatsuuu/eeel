@@ -11,14 +11,11 @@
               <v-form>
                 <v-text-field
                   v-model="username"
-                  :counter="10"
                   label="username"
                   prepend-icon="person"
                 ></v-text-field>
                 <v-text-field
                   v-model="email"
-                  :rules="emailRules"
-                  :counter="10"
                   label="email"
                   prepend-icon="mail"
                 ></v-text-field>
@@ -39,7 +36,7 @@
               >LOGIN</v-btn>
               <v-spacer />
               <v-btn
-                v-on:click="signup"
+                v-on:click="doSignup"
               >SIGNUP</v-btn>
             </v-card-actions>
           </v-card>
@@ -50,7 +47,7 @@
 </template>
 
 <script>
-import firebase from '~/plugins/firebase'
+import firebase, { db, getTimestamp } from '~/plugins/firebase'
 
 export default {
   layout: 'footer',
@@ -63,14 +60,42 @@ export default {
     }
   },
   methods : {
-    signup() {
+    doSignup() {
+      console.log('doSignup')
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-      .then(user => {
-        this.$store.dispatch('user/setUser', user)
-        this.$router.push("/")
-      }).catch((error) => {
-        alert(error)
-      })
+        .then(user => {
+          this.createUser(user.user.uid)
+        }).catch((error) => {
+          alert(error.message)
+        })
+    },
+    createUser(uid) {
+      console.log('createUser', uid)
+      const user = {
+        username: this.username,
+        email: this.email,
+        img: null,
+        profile: null,
+        posts: null,
+        likes: null,
+        is_auth: false,
+        is_deleted: false,
+        is_hide: false,
+        created_at: getTimestamp(),
+        update_at: getTimestamp(),
+      }
+      db.collection('users').doc(uid).set(user)
+        .then(() => {
+          this.$store.commit('user/setUser', {
+            uid: uid,
+            email: this.email,
+            username: this.username
+          })
+          this.$router.push("/")
+        })
+        .catch(function (error) {
+          console.log('error user: ', error)
+        })
     },
     gotoLogin() {
       this.$router.push("/login")

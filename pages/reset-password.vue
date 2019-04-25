@@ -11,8 +11,6 @@
               <v-form>
                 <v-text-field
                   v-model="email"
-                  :rules="emailRules"
-                  :counter="10"
                   label="email"
                   prepend-icon="email"
                 ></v-text-field>

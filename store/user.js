@@ -1,7 +1,5 @@
-export const strict = false
-
 export const state = () => ({
-  user: null,
+  user: null
 })
 
 export const mutations = {
@@ -21,6 +19,9 @@ export const actions = {
 }
 
 export const getters = {
+  user: state => {
+    return state.user
+  },
   isAuthenticated (state) {
     return !!state.user
   }
