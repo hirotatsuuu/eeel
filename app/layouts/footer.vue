@@ -11,10 +11,12 @@
             <v-btn
               v-for="link in links"
               :key="link.title"
-              :href="link.href"
+              :href="link.url"
               class="ml-0 mr-3"
               target="_blank"
               flat
+              round
+              style="text-transform: none;"
             >
               {{ link.title }}
             </v-btn>
@@ -35,23 +37,11 @@
       links: [
         {
           title: 'eeelについて',
-          url: '',
-        },
-        {
-          title: 'ガイドライン',
-          url: '',
-        },
-        {
-          title: 'プライバシーポリシー',
-          url: '',
-        },
-        {
-          title: '利用規約',
-          url: '',
+          url: '/about',
         },
         {
           title: 'Twitter',
-          url: '',
+          url: 'https://twitter.com/hirotatsuuu',
         }
       ]
     }),
