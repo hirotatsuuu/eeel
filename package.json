@@ -1,14 +1,22 @@
 {
   "name": "eeel",
   "version": "1.0.0",
-  "description": "My brilliant Nuxt.js project",
+  "description": "eeel project",
   "author": "hirotatsu",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hirotatsuuu/eeel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hirotatsuuu/eeel/issues"
+  },
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "deploy": "nuxt build && firebase deploy"
   },
   "dependencies": {
     "@nuxtjs/dotenv": "^1.3.0",
