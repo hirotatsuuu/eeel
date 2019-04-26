@@ -54,7 +54,7 @@ import firebase, { db, storage } from '~/plugins/firebase'
 
 export default {
   layout: 'footer',
-  middleware: 'authenticated',
+  // middleware: 'authenticated',
   data() {
     return {
       email: 'jjj@jjj.jj',
@@ -64,14 +64,14 @@ export default {
   },
   mounted() {
     console.log('mounted')
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-        this.$router.push("/")
-      }
-    })
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (!user) {
+    //     this.$router.push("/login")
+    //   } else {
+    //     console.log('user', user.uid, user.email)
+    //     this.$router.push("/")
+    //   }
+    // })
   },
   methods : {
     login() {
@@ -88,7 +88,8 @@ export default {
               this.$store.commit('user/setUser', {
                 uid: user.user.uid,
                 email: user.user.email,
-                username: userSnapshot.username
+                username: userSnapshot.username,
+                user: userSnapshot
               })
               this.$router.push("/")
             } else {

@@ -7,17 +7,17 @@
         >
           <v-layout row wrap>
             <v-flex
-              v-for="card in cards"
-              :key="card.title"
-              v-bind="{ [`xs${card.flex}`]: true }"
+              v-for="post in $store.getters['post/posts']"
+              :key="post.title"
+              xs6
             >
               <v-card
-                v-on:click="gotoChallenge"
+                v-on:click="gotoPostDetail(post.pid)"
                 hover
                 style="margin: 5px"
               >
                 <v-img
-                  :src="card.src"
+                  :src="post.post_image_url"
                   height="200px"
                 >
                   <v-container
@@ -27,7 +27,7 @@
                   >
                     <v-layout fill-height>
                       <v-flex xs12 align-end flexbox>
-                        <span class="headline white--text" v-text="card.title"></span>
+                        <span class="headline white--text" v-text="post.title"></span>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -38,11 +38,11 @@
                     <v-list-tile-avatar>
                       <v-img
                         class="elevation-6"
-                        src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                        :src="post.user_image_url ? post.user_image_url : sampleUserImage"
                       ></v-img>
                     </v-list-tile-avatar>
                     <v-list-tile-content>
-                      <v-list-tile-title>hirotatsu</v-list-tile-title>
+                      <v-list-tile-title>{{ post.username }}</v-list-tile-title>
                     </v-list-tile-content>
                     <v-layout
                       align-center
@@ -50,10 +50,10 @@
                       style="margin-bottom: 10px;"
                     >
                       <v-icon class="mr-1">favorite</v-icon>
-                      <span class="subheading mr-2">256</span>
+                      <span class="subheading mr-2">{{ post.like_num }}</span>
                       <span class="mr-2" />
                       <v-icon class="mr-1">comment</v-icon>
-                      <span class="subheading">45</span>
+                      <span class="subheading">{{ post.comment_num }}</span>
                     </v-layout>
                   </v-list-tile>
                 </v-card-actions>
@@ -66,38 +66,50 @@
 </template>
 
 <script>
-import firebase from '~/plugins/firebase'
+import firebase, { db, storage } from '~/plugins/firebase'
 
 export default {
   layout: 'header',
   middleware: 'authenticated',
   data: () => ({
-    cards: [
-      { title: 'サンプル', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 6 },
-      { title: 'とりま', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-      { title: '作ってみた', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 6 },
-      { title: 'あああ', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 6 },
-      { title: '世界一周します', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-      { title: '嫌いなピーマン食べてみます', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 6 },
-      { title: '会社を退職します', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-      { title: 'ブログ初めてみます', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 6 },
-      { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-    ]
+    sampleUserImage: "https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light",
   }),
   mounted() {
     console.log('mounted')
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-      }
-    })
+    this.checkLogin()
+    this.getPosts()
   },
   methods: {
-    gotoChallenge() {
-      this.$router.push("/challenge")
-    }
+    checkLogin () {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+          this.$router.push("/login")
+        } else {
+          console.log('user', user.uid, user.email)
+        }
+      })
+    },
+    getPosts () {
+      console.log('getPosts')
+      const querySnapshot = db
+        .collection('posts')
+        .where('is_start', '==', true)
+        .onSnapshot(querySnapshot => {
+          var posts = [];
+          console.log('querySnapshot', querySnapshot)
+          querySnapshot.forEach(doc => {
+            console.log('title: ', doc.data())
+            const post = doc.data()
+            post.pid = doc.id
+            posts.push(post);
+          });
+          this.$store.commit('post/setPosts', posts)
+        });
+    },
+    gotoPostDetail(pid) {
+      this.$store.commit('post/setPid', pid)
+      this.$router.push("/posts/" + pid)
+    },
   }
 }
 </script>

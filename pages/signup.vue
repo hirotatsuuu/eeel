@@ -74,7 +74,7 @@ export default {
       const user = {
         username: this.username,
         email: this.email,
-        img: null,
+        image_url: null,
         profile: null,
         posts: null,
         likes: null,
