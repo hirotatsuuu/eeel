@@ -38,7 +38,7 @@ $ yarn start
 $ yarn run generate
 
 # deploy project to firebase hosting
-$ firebase deply
+$ firebase deploy
 
 ```
 
