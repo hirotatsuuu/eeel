@@ -1,5 +1,6 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
+import 'firebase/storage'
 
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -15,12 +16,10 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore()
-const settings = { timestampsInSnapshots: true }
-db.settings(settings)
+const storage = firebase.storage()
+
 const getTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
 
-const storage = firebase.storage();
-
-export { db, getTimestamp, storage }
+export { db, storage, getTimestamp }
 
 export default firebase

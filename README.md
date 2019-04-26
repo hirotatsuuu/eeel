@@ -10,6 +10,13 @@ node v10.15.0
 firebase-tools 6.7.0
 ```
 
+## Prepare Environment Values
+
+```
+# create .env file
+$ cp .env.template .env
+```
+
 ## Build Setup
 
 ``` bash
