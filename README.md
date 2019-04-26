@@ -3,16 +3,14 @@
 > eeel project
 
 ## Environment
+- node v10.15.0
+- yarn v1.13.0
+- firebase-tools 6.7.0
 
-```bash
-yarn v1.13.0
-node v10.15.0
-firebase-tools 6.7.0
-```
 
 ## Prepare Environment Values
 
-```
+```bash
 # create .env file
 $ cp .env.template .env
 ```
