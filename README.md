@@ -1,6 +1,14 @@
 # eeel
 
-> My brilliant Nuxt.js project
+> eeel project
+
+## Environment
+
+```bash
+yarn v1.13.0
+node v10.15.0
+firebase-tools 6.7.0
+```
 
 ## Build Setup
 
@@ -9,14 +17,27 @@
 $ yarn install
 
 # serve with hot reload at localhost:3000
-$ yarn run dev
+$ yarn dev
 
 # build for production and launch server
-$ yarn run build
+$ yarn build
 $ yarn start
-
-# generate static project
-$ yarn run generate
 ```
 
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
+## Deploy
+
+```bash
+# generate static project
+$ yarn run generate
+
+# deploy project to firebase hosting
+$ firebase deply
+
+```
+
+## Reference
+- https://jp.vuejs.org
+- https://nuxtjs.org
+- https://vuex.vuejs.org
+- https://vuetifyjs.com
+- https://firebase.google.com
