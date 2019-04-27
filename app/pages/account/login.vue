@@ -33,7 +33,7 @@
               >SIGNUP</v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                v-on:click="login"
+                v-on:click="doLogin"
               >LOGIN</v-btn>
             </v-card-actions>
             <hr>
@@ -53,28 +53,16 @@
 import firebase, { db, storage } from '~/plugins/firebase'
 
 export default {
-  layout: 'footer',
-  // middleware: 'authenticated',
+  layout: 'account',
   data() {
     return {
       email: 'jjj@jjj.jj',
       password: 'jjjjjj',
-      show_password: false,
+      show_password: false
     }
   },
-  mounted() {
-    console.log('mounted')
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   if (!user) {
-    //     this.$router.push("/login")
-    //   } else {
-    //     console.log('user', user.uid, user.email)
-    //     this.$router.push("/")
-    //   }
-    // })
-  },
   methods : {
-    login() {
+    doLogin() {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(user => {
         db.collection('/users')
@@ -99,17 +87,15 @@ export default {
           .catch(function(error) {
             console.log("Error : ", error);
           })
-
-
       }).catch((error) => {
         alert(error)
       });
     },
     gotoSignup() {
-      this.$router.push("/signup")
+      this.$router.push("/account/signup")
     },
     gotoResetPassword() {
-      this.$router.push("/reset-password")
+      this.$router.push("/account/reset-password")
     }
   }
 }

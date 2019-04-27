@@ -69,11 +69,13 @@
 import firebase, { db, storage } from '~/plugins/firebase'
 
 export default {
-  layout: 'header',
   middleware: 'authenticated',
-  data: () => ({
+  data() {
+    return {
     sampleUserImage: "https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light",
-  }),
+
+    }
+  },
   mounted() {
     console.log('mounted')
     this.checkLogin()
@@ -83,7 +85,7 @@ export default {
     checkLogin () {
       firebase.auth().onAuthStateChanged((user) => {
         if (!user) {
-          this.$router.push("/login")
+          this.$router.push("/account/login")
         } else {
           console.log('user', user.uid, user.email)
         }

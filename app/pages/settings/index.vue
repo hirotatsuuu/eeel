@@ -25,27 +25,16 @@
 import firebase from '~/plugins/firebase'
 
 export default {
-  layout: 'header',
   middleware: 'authenticated',
-  mounted() {
-    console.log('mounted')
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-      }
-    })
-  },
   methods: {
     logout() {
       firebase.auth().signOut()
-      .then(() => {
-        this.$store.commit('user/setUser', null)
-        this.$router.push("/login")
-      }).catch((error) => {
-        alert(error)
-      })
+        .then(() => {
+          this.$store.commit('user/setUser', null)
+          this.$router.push("/account/login")
+        }).catch((error) => {
+          alert(error)
+        })
     },
   }
 }

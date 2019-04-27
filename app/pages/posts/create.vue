@@ -87,7 +87,6 @@
 import firebase, { db, getTimestamp, storage } from '~/plugins/firebase'
 
 export default {
-  layout: 'header',
   middleware: 'authenticated',
   data() {
     return {
@@ -103,16 +102,6 @@ export default {
       postSample: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/post_sample.png?alt=media&token=d72afff6-5f94-4d2b-b39a-47b79c0241a4',
       show: false,
     }
-  },
-  mounted() {
-    console.log('mounted', this.$store.getters['user/user'])
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-      }
-    })
   },
   methods: {
     pickFile () {

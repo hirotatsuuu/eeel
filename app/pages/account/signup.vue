@@ -50,13 +50,13 @@
 import firebase, { db, getTimestamp } from '~/plugins/firebase'
 
 export default {
-  layout: 'footer',
+  layout: 'account',
   data() {
     return {
       username: '',
       email: '',
       password: '',
-      show_password: false,
+      show_password: false
     }
   },
   methods : {
@@ -98,7 +98,7 @@ export default {
         })
     },
     gotoLogin() {
-      this.$router.push("/login")
+      this.$router.push("/account/login")
     }
   }
 }

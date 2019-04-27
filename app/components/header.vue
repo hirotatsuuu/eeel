@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="user">
+  <div v-if="user">
     <v-toolbar
       fixed
       app
@@ -29,7 +29,7 @@
       <v-spacer />
       <v-toolbar-title>
         <span style="cursor: pointer;">
-          <img src="/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome">
+          <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome">
         </span>
       </v-toolbar-title>
       <v-spacer />
@@ -102,36 +102,7 @@
         <strong style="margin-left: 3px;">作成</strong>
       </v-btn>
     </v-toolbar>
-    <v-content>
-      <v-container>
-        <nuxt />
-      </v-container>
-    </v-content>
-    <v-footer
-      height="auto"
-    >
-      <v-container mx-auto>
-        <v-layout wrap>
-          <v-flex xs9>
-            <v-btn
-              v-for="link in links"
-              :key="link.title"
-              :href="link.href"
-              class="ml-0 mr-3"
-              target="_blank"
-              flat
-            >
-              {{ link.title }}
-            </v-btn>
-          </v-flex>
-          <v-spacer />
-            <div style="cursor: pointer;">
-              <img src="/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
-            </div>
-        </v-layout>
-      </v-container>
-    </v-footer>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -172,9 +143,6 @@ export default {
     gotoHome() {
       this.$router.push("/")
     },
-    gotoMemberPage() {
-      this.$router.push("/member-page")
-    },
     gotoCreatePost() {
       this.$router.push("/posts/create")
     },
@@ -185,18 +153,15 @@ export default {
     gotoSettings() {
       this.$router.push("/settings")
     },
-    gotoMemberPage() {
-      this.$router.push("/member-page")
-    },
     doLogout() {
       firebase.auth().signOut()
-      .then(() => {
-        this.$store.commit('user/setUser', null)
-        this.$router.push("/login")
-      }).catch((error) => {
-        alert(error)
-      })
-    },
+        .then(() => {
+          this.$store.commit('user/setUser', null)
+          this.$router.push("/account/login")
+        }).catch((error) => {
+          alert(error)
+        })
+    }
   }
 }
 </script>

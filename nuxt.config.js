@@ -41,7 +41,7 @@ export default {
   */
   css: [
     '~/assets/style/app.styl',
-    '~/assets/main.css'
+    '~/assets/css/main.css'
   ],
 
   /*

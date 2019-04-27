@@ -37,7 +37,7 @@
 import firebase from '~/plugins/firebase'
 
 export default {
-  layout: 'footer',
+  layout: 'account',
   data() {
     return {
       email: '',
@@ -47,10 +47,10 @@ export default {
   methods : {
     send() {
       // TODO: パスワード再設定
-      this.$router.push("/login")
+      this.$router.push("/account/login")
     },
     gotoLogin() {
-      this.$router.push("/login")
+      this.$router.push("/account/login")
     }
   }
 }

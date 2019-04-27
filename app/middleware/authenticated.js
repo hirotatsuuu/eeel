@@ -1,10 +1,14 @@
+import firebase from '~/plugins/firebase'
+
 export default function ({ store, route, redirect }) {
   console.log('authenticated')
-  console.log('use/user', store.getters['user/user'])
-  if (!store.getters['user/isAuthenticated'] && route.name !== "login") {
-    redirect('/login')
-  }
-  if (store.getters['user/isAuthenticated'] && route.name === "login") {
-    redirect('/')
+  if (!store.getters['user/isAuthenticated']) {
+    redirect('/account/login')
+  } else {
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        redirect('/account/login')
+      }
+    })
   }
 }

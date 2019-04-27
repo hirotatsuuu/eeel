@@ -63,7 +63,6 @@
 import firebase from '~/plugins/firebase'
 
 export default {
-  layout: 'header',
   middleware: 'authenticated',
   data() {
     return {
@@ -76,20 +75,10 @@ export default {
   },
   mounted() {
     console.log('mounted', this.user)
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-      }
-    })
   },
   methods: {
     gotoSettings() {
       this.$router.push("/settings")
-    },
-    gotoMemberPage() {
-      this.$router.push("/member-page")
     },
     pickFile () {
       this.$refs.image.click()

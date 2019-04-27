@@ -154,13 +154,6 @@ export default {
   },
   mounted() {
     console.log('mounted')
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.$router.push("/login")
-      } else {
-        console.log('user', user.uid, user.email)
-      }
-    })
     this.getPost()
   },
   methods: {
