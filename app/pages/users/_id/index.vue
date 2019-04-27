@@ -1,58 +1,50 @@
 <template>
-  <div>
+  <div class="py-3">
     <v-card style="margin-top: 100px;">
       <v-layout justify-center>
         <v-flex
           v-if="this.$store.getters['user/user']"
-          xs12
-          sm8
-          md6
           text-xs-center
         >
-            <v-avatar
-              size="200"
-              tile
-              v-if="imageUrl || user.user_image_url"
-              mx-auto
-              v-on:click="pickFile"
-              style="cursor: pointer; margin-top: -100px;"
+          <v-avatar
+            size="200"
+            tile
+            v-if="user.userImage"
+            mx-auto
+            style="margin-top: -100px;"
+          >
+            <img
+              :src="user.userImage"
+              style="object-fit: cover; border-radius: 100px"
             >
-              <img
-                :src="imageUrl ? imageUrl : user.user_image_url ? user.user_image_url : sampleImageUrl"
-                style="object-fit: cover; border-radius: 100px"
-              >
-            </v-avatar>
-            <v-avatar
-              size="200"
-              tile
-              v-else
-              v-on:click="pickFile"
-              style="cursor: pointer; margin-top: -100px;"
-            >
-              <v-icon size="200" color="grey darken-1">account_circle</v-icon>
-            </v-avatar>
-            <input
-              type="file"
-              style="display: none"
-              ref="image"
-              v-on:change="onFilePicked"
-            >
-          </v-flex>
-        </v-layout>
-        <v-card-title>
-          <v-layout justify-center>
-            <div class="title">{{ user.username }}</div>
-            <div style="margin-top: 30px;">{{ user.user.profile ? user.user.profile : '' }}</div>
+          </v-avatar>
+          <v-avatar
+            size="200"
+            tile
+            v-else
+            style="margin-top: -100px;"
+          >
+            <v-icon size="200" color="grey darken-1">account_circle</v-icon>
+          </v-avatar>
+        </v-flex>
+      </v-layout>
+      <v-card-title>
+        <v-layout justify-center>
+          <div class="title">{{ user.username }}</div>
         </v-layout>
       </v-card-title>
+      <v-card-text>
+        <v-layout justify-center>
+          <div v-if="userInfo.profile">{{ userInfo.profile }}</div>
+          <div v-else style="color: gray;" class="caption">プロフィールがありません。</div>
+        </v-layout>
+      </v-card-text>
       <v-card-actions>
         <v-layout justify-center>
           <v-btn
-            v-on:click="gotoSettings"
+            v-on:click="gotoEdit"
+            dark
           >プロフィールを編集する</v-btn>
-          <v-btn
-            v-on:click="gotoSettings"
-          >設定</v-btn>
         </v-layout>
       </v-card-actions>
     </v-card>
@@ -67,42 +59,17 @@ export default {
   data() {
     return {
       user: this.$store.getters['user/user'],
-      imageName: '',
-      imageUrl: '',
-      imageFile: '',
-      sampleImageUrl: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/account_sample.png?alt=media&token=224e7297-5fe7-4c2a-9fc1-b43315e3c9c8'
+      userInfo: this.$store.getters['user/userInfo']
     }
   },
   mounted() {
-    console.log('mounted', this.user)
+    console.log('user mounted', this.user)
   },
   methods: {
-    gotoSettings() {
-      this.$router.push("/settings")
-    },
-    pickFile () {
-      this.$refs.image.click()
-    },
-    onFilePicked (e) {
-      const files = e.target.files
-      if(files[0] !== undefined) {
-        this.imageName = files[0].name
-        if(this.imageName.lastIndexOf('.') <= 0) {
-          return
-        }
-        const fr = new FileReader ()
-        fr.readAsDataURL(files[0])
-        fr.addEventListener('load', () => {
-          this.imageUrl = fr.result
-          this.imageFile = files[0] // this is an image file that can be sent to server...
-          console.log('imageFile', this.imageFile)
-        })
-      } else {
-        // this.imageName = ''
-        // this.imageFile = ''
-        // this.imageUrl = ''
-      }
-    },
+    gotoEdit() {
+      console.log('saa', this.user.uid)
+      this.$router.push(this.user.uid + "/edit")
+    }
   }
 }
 </script>

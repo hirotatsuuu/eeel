@@ -50,9 +50,9 @@
             <v-avatar
               size="30"
               tile
-              v-if="user.user.image_url"
+              v-if="user.userImage"
             >
-              <img :src="user.user.image_url" style="object-fit: cover; border-radius: 30px;">
+              <img :src="user.userImage" style="object-fit: cover; border-radius: 30px;">
             </v-avatar>
             <v-avatar
               size="30"

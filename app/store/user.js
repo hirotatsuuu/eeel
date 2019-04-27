@@ -1,6 +1,6 @@
 export const state = () => ({
   user: null,
-  userImage: null
+  userInfo: null
 })
 
 export const mutations = {
@@ -11,11 +11,11 @@ export const mutations = {
       state.user = null
     }
   },
-  setUserImage (state, payload) {
+  setUserInfo (state, payload) {
     if (payload) {
-      state.userImage = payload
+      state.userInfo = payload
     } else {
-      state.userImage = null
+      state.userInfo = null
     }
   }
 }
@@ -24,8 +24,8 @@ export const actions = {
   setUser ({ commit }, payload) {
     commit('setUser', payload)
   },
-  setUserImage ({ commit }, payload) {
-    commit('setUserImage', payload)
+  setUserInfo ({ commit }, payload) {
+    commit('setUserInfo', payload)
   }
 }
 
@@ -36,10 +36,7 @@ export const getters = {
   isAuthenticated (state) {
     return !!state.user
   },
-  userImage: state => {
-    return state.userImage
-  },
-  isUserImage (state) {
-    return !!state.userImage
+  userInfo: state => {
+    return state.userInfo
   }
 }

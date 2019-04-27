@@ -6,8 +6,16 @@ export default function ({ store, route, redirect }) {
     redirect('/account/login')
   } else {
     firebase.auth().onAuthStateChanged(user => {
+      console.log('onAuthStateChanged', user)
       if (!user) {
         redirect('/account/login')
+      } else {
+        store.commit('user/setUser', {
+          uid: user.uid,
+          email: user.email,
+          username: user.displayName,
+          userImage: user.photoURL,
+        })
       }
     })
   }

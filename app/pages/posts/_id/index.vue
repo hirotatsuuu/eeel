@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-layout justify-center>
+    <v-layout class="pt-1">
       <v-flex
         v-if="this.$store.getters['post/post']"
       >

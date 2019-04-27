@@ -90,9 +90,10 @@ export default {
               this.$store.commit('user/setUser', {
                 uid: user.user.uid,
                 email: user.user.email,
-                username: userSnapshot.username,
-                user: userSnapshot
+                username: user.user.displayName,
+                userImage: user.user.photoURL,
               })
+              this.$store.commit('user/setUserInfo', userSnapshot)
               this.$router.push("/")
             } else {
               console.log("No user");

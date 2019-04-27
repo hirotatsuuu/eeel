@@ -1,66 +1,60 @@
 <template>
   <div>
-    <v-layout justify-center>
-        <v-container
-          fluid
-          grid-list-md
+    <v-layout row wrap>
+      <v-flex
+        v-for="post in $store.getters['post/posts']"
+        :key="post.title"
+        xs12 sm6 md4
+      >
+        <v-card
+          v-on:click="gotoPostDetail(post.pid)"
+          hover
+          style="margin: 5px"
         >
-          <v-layout row wrap>
-            <v-flex
-              v-for="post in $store.getters['post/posts']"
-              :key="post.title"
-              xs6
+          <v-img
+            :src="post.post_image_url"
+            height="200px"
+          >
+            <v-container
+              fill-height
+              fluid
+              pa-2
             >
-              <v-card
-                v-on:click="gotoPostDetail(post.pid)"
-                hover
-                style="margin: 5px"
-              >
+              <v-layout fill-height>
+                <v-flex xs12 sm6 md4 align-end flexbox>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-img>
+          <v-card-text class="py-0 mt-3">
+            <span class="headline" v-text="post.title"></span>
+          </v-card-text>
+          <v-card-actions>
+            <v-list-tile class="grow">
+              <v-list-tile-avatar>
                 <v-img
-                  :src="post.post_image_url"
-                  height="200px"
-                >
-                  <v-container
-                    fill-height
-                    fluid
-                    pa-2
-                  >
-                    <v-layout fill-height>
-                      <v-flex xs12 align-end flexbox>
-                        <span class="headline white--text" v-text="post.title"></span>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-img>
-
-                <v-card-actions>
-                  <v-list-tile class="grow">
-                    <v-list-tile-avatar>
-                      <v-img
-                        class="elevation-6"
-                        :src="post.user_image_url ? post.user_image_url : sampleUserImage"
-                      ></v-img>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ post.username }}</v-list-tile-title>
-                    </v-list-tile-content>
-                    <v-layout
-                      align-center
-                      justify-end
-                      style="margin-bottom: 10px;"
-                    >
-                      <v-icon class="mr-1">favorite</v-icon>
-                      <span class="subheading mr-2">{{ post.like_num }}</span>
-                      <span class="mr-2" />
-                      <v-icon class="mr-1">comment</v-icon>
-                      <span class="subheading">{{ post.comment_num }}</span>
-                    </v-layout>
-                  </v-list-tile>
-                </v-card-actions>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
+                  class="elevation-6"
+                  :src="post.user_image_url ? post.user_image_url : sampleUserImage"
+                ></v-img>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ post.username }}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-layout
+                align-center
+                justify-end
+                style="margin-bottom: 10px;"
+              >
+                <v-icon class="mr-1">favorite</v-icon>
+                <span class="subheading mr-2">{{ post.like_num }}</span>
+                <span class="mr-2" />
+                <v-icon class="mr-1">comment</v-icon>
+                <span class="subheading">{{ post.comment_num }}</span>
+              </v-layout>
+            </v-list-tile>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
     </v-layout>
   </div>
 </template>
