@@ -65,15 +65,9 @@
         </template>
         <v-list>
           <v-list-tile avatar v-on:click="gotoMyAccount">
-            <v-list-tile-avatar v-if="user.user.image_url">
-              <img :src="user.user.image_url" style="object-fit: cover;">
-            </v-list-tile-avatar>
-            <v-list-tile-avatar v-else>
-              <v-icon large color="grey darken-1">account_circle</v-icon>
-            </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>{{ user.username }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ user.email }}</v-list-tile-sub-title>
+              <v-list-tile-title><span class="title">{{ user.username }}</span></v-list-tile-title>
+              <v-list-tile-sub-title><span class="caption">{{ user.email }}</span></v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider></v-divider>

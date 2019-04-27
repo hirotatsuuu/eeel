@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  layout: 'blank',
   props: {
     error: {
       type: Object,
@@ -18,7 +19,7 @@ export default {
   },
   head() {
     return {
-      title: this.statusCode,
+      title: 'error',
       meta: [
         {
           name: 'viewport',
@@ -32,7 +33,7 @@ export default {
       return (this.error && this.error.statusCode) || 500
     },
     message() {
-      return this.error.message || 'エラーが発生しました'
+      return this.error.message
     }
   }
 }

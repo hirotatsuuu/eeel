@@ -1,14 +1,18 @@
 <template>
-  <div>
-    <v-container fluid fill-height style="margin-top: 100px;">
+  <div class="mt-5 pt-5">
       <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
+        <v-flex xs12 sm8 md6 xg4>
           <v-card>
-            <v-toolbar>
-              <v-toolbar-title>Login</v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form>
+            <v-card-title>
+              <v-layout align-center justify-center>
+                  <img src="@/assets/images/logo.png" alt="logo" style="height: 60px;">
+              </v-layout>
+            </v-card-title>
+            <v-layout align-center justify-center>
+            <span style="color: gray;" class="caption">~ 挑戦と応援をつなぐ ~</span>
+              </v-layout>
+            <v-card-text class="pb-0">
+              <v-form class="mx-5">
                 <v-text-field
                   v-model="email"
                   :counter="32"
@@ -25,27 +29,37 @@
                   @click:append="show_password = !show_password"
                 ></v-text-field>
               </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
+              <div
+                class="text-xs-right"
+                >
+                <v-btn
+                v-on:click="gotoResetPassword"
                 flat
-                v-on:click="gotoSignup"
-              >SIGNUP</v-btn>
-              <v-spacer></v-spacer>
+                small
+              ><span style="color: gray;" class="caption mx-4">パスワードを忘れた方はこちら</span></v-btn>
+              </div>
+            </v-card-text>
+            <v-card-actions class="pb-0">
+              <v-layout align-center justify-center>
               <v-btn
                 v-on:click="doLogin"
+                large
+                block
+                dark
+                class="mx-5"
               >LOGIN</v-btn>
+              </v-layout>
             </v-card-actions>
-            <hr>
-            <v-spacer></v-spacer>
-            <v-btn
-              flat
-              v-on:click="  gotoResetPassword"
-            >パスワードを忘れたかたはこちら</v-btn>
+              <v-layout align-center justify-center>
+              <v-btn
+                v-on:click="gotoSignup"
+                flat
+                small
+              ><span style="color: gray;" class="caption mx-5">新規登録はこちら</span></v-btn>
+              </v-layout>
           </v-card>
         </v-flex>
       </v-layout>
-    </v-container>
   </div>
 </template>
 

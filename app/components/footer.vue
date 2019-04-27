@@ -20,9 +20,9 @@
           </v-btn>
         </v-flex>
         <v-spacer />
-          <div style="cursor: pointer;">
-            <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
-          </div>
+        <div style="cursor: pointer;">
+          <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
+        </div>
       </v-layout>
     </v-container>
   </v-footer>
