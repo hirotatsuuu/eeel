@@ -6,6 +6,7 @@
       left
       hover
       fixed
+      fab
     >
       <template v-slot:activator>
         <v-btn
@@ -88,6 +89,7 @@ export default {
   middleware: 'authenticated',
   data() {
     return {
+      fab: '',
       user: this.$store.getters['user/user']
     }
   },
@@ -97,7 +99,7 @@ export default {
     }),
   },
   created () {
-    console.log('header created', this.user)
+    console.log('mobile-menu created', this.user)
     this.$store.subscribe((mutation, state) => {
       this.user = this.getUser
     })

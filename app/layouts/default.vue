@@ -7,7 +7,7 @@
       <MobileMenu />
     </div>
     <v-content>
-      <v-container class="pt-0 mt-1">
+      <v-container class="pa-0 my-0">
         <nuxt />
       </v-container>
     </v-content>
@@ -15,13 +15,7 @@
       <Footer />
     </div>
     <div v-else>
-      <v-footer height="80">
-        <v-container>
-          <v-layout justify-center>
-            <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
-          </v-layout>
-        </v-container>
-      </v-footer>
+      <MobileFooter />
     </div>
   </v-app>
 </template>
@@ -30,6 +24,7 @@
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 import MobileMenu from '@/components/mobile-menu'
+import MobileFooter from '@/components/mobile-footer'
 
 export default {
   data() {
@@ -40,15 +35,17 @@ export default {
   components : {
     Header,
     Footer,
-    MobileMenu
+    MobileMenu,
+    MobileFooter
   },
   created() {
-    console.log('window.parent.screen.width', )
+    console.log('default created')
+    console.log('window.parent.screen.width', window.parent.screen.width)
   },
   methods: {
-      gotoHome() {
-        this.$router.push("/")
-      }
+    gotoHome() {
+      this.$router.push("/")
     }
+  }
 }
 </script>

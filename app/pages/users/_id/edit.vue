@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-3">
+  <div class="py-3 ma-1">
     <v-card style="margin-top: 100px;">
       <v-layout justify-center>
         <v-flex
@@ -103,14 +103,14 @@ export default {
         const uploadTask = storage.ref().child("users").child(uid).put(this.imageFile)
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
           function(snapshot) {
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            console.log('Upload is ' + progress + '% done')
             switch (snapshot.state) {
               case firebase.storage.TaskState.PAUSED:
-                console.log('Upload is paused');
+                console.log('Upload is paused')
                 break;
               case firebase.storage.TaskState.RUNNING:
-                console.log('Upload is running');
+                console.log('Upload is running')
                 break;
             }
           }, function(error) {

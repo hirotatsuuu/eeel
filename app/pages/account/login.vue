@@ -87,7 +87,7 @@ export default {
             if (doc.exists) {
               // doc.data() でデータを取得
               const userSnapshot = doc.data()
-              console.log('userSnapshot', userSnapshot.username);
+              console.log('userSnapshot', userSnapshot.username)
               this.$store.commit('user/setUser', {
                 uid: user.user.uid,
                 email: user.user.email,
@@ -98,11 +98,11 @@ export default {
               this.$nuxt.$loading.finish()
               this.$router.push("/")
             } else {
-              console.log("No user");
+              console.log("No user")
             }
           })
           .catch(function(error) {
-            console.log("Error : ", error);
+            console.log("Error : ", error)
           })
       }).catch((error) => {
         alert(error)

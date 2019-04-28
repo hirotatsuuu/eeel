@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-layout class="pt-1">
+    <v-layout class="ma-1">
       <v-flex
         v-if="this.$store.getters['post/post']"
       >
@@ -164,15 +164,15 @@ export default {
         .get()
         .then(doc => {
           if (doc.exists) {
-            console.log("Document data:", doc.data());
+            console.log("Document data:", doc.data())
             this.$store.commit('post/setPost', doc.data())
           } else {
             // doc.data() will be undefined in this case
-            console.log("No such document!");
+            console.log("No such document!")
           }
         }).catch(function(error) {
-          console.log("Error getting document:", error);
-        });
+          console.log("Error getting document:", error)
+        })
     },
     doCheer () {
 

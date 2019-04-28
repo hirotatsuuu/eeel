@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-container grid-list-md text-xs-center style="margin-top: -20px;">
+    <v-layout class="ma-1">
       <v-flex>
-        <v-card style="margin: 5px;">
+        <v-card>
           <v-img
             :src="imageUrl ? imageUrl : postSample"
             height="200px"
@@ -37,9 +37,10 @@
           </v-slide-y-transition>
         </v-card>
       </v-flex>
+    </v-layout>
 
-      <v-divider style="margin: 30px" />
-
+    <v-divider style="margin: 30px" />
+    <v-container grid-list-md text-xs-center class="py-0">
       <v-text-field
         v-model="title"
         label="あなたの挑戦をひとことで表すと？"

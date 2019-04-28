@@ -1,5 +1,5 @@
 <template>
-  <div class="py-3">
+  <div class="py-3 ma-1">
     <v-card style="margin-top: 100px;">
       <v-layout justify-center>
         <v-flex

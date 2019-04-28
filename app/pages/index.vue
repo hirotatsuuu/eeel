@@ -9,7 +9,7 @@
         <v-card
           v-on:click="gotoPostDetail(post.pid)"
           hover
-          style="margin: 5px"
+          class="ma-1"
         >
           <v-img
             :src="post.post_image_url"
@@ -90,16 +90,16 @@ export default {
         .collection('posts')
         .where('is_start', '==', true)
         .onSnapshot(querySnapshot => {
-          var posts = [];
+          var posts = []
           console.log('querySnapshot', querySnapshot)
           querySnapshot.forEach(doc => {
             console.log('title: ', doc.data())
             const post = doc.data()
             post.pid = doc.id
-            posts.push(post);
-          });
+            posts.push(post)
+          })
           this.$store.commit('post/setPosts', posts)
-        });
+        })
     },
     gotoPostDetail(pid) {
       this.$store.commit('post/setPid', pid)

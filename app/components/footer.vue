@@ -1,7 +1,5 @@
 <template>
-  <v-footer
-    height="auto"
-  >
+  <v-footer height="auto">
     <v-container mx-auto>
       <v-layout wrap>
         <v-flex xs9>
@@ -20,7 +18,7 @@
         </v-flex>
         <v-spacer />
         <div style="cursor: pointer;">
-          <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome()">
+          <img src="@/assets/images/logo.png" alt="logo" style="height: 35px;" v-on:click="gotoHome">
         </div>
       </v-layout>
     </v-container>
@@ -41,6 +39,9 @@
         }
       ]
     }),
+    created: () => {
+      console.log('footer created')
+    },
     methods: {
       gotoHome() {
         this.$router.push("/")
