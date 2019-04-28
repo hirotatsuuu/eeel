@@ -16,7 +16,7 @@
                 <v-text-field
                   v-model="email"
                   :counter="32"
-                  label="email"
+                  label="めーるあどれす"
                   prepend-icon="email"
                 ></v-text-field>
                 <v-text-field
@@ -24,7 +24,7 @@
                   :append-icon="show_password ? 'visibility' : 'visibility_off'"
                   :type="show_password ? 'text' : 'password'"
                   :counter="32"
-                  label="password"
+                  label="ぱすわーど"
                   prepend-icon="lock"
                   @click:append="show_password = !show_password"
                 ></v-text-field>
@@ -47,7 +47,7 @@
                 block
                 dark
                 class="mx-5"
-              >LOGIN</v-btn>
+              >ログイン</v-btn>
               </v-layout>
             </v-card-actions>
               <v-layout align-center justify-center>

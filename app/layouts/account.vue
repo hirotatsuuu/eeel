@@ -21,7 +21,7 @@ import MobileFooter from '@/components/mobile-footer'
 export default {
   data() {
     return {
-      width: window.parent.screen.width
+      width: window.innerWidth
     }
   },
   components: {

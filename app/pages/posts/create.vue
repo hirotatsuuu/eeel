@@ -52,7 +52,7 @@
       <v-flex>
         <v-textarea
           box
-          label="あなたの挑戦をくわしくききたいな。"
+          label="あなたの挑戦をくわしく教えてほしいな"
           v-model="contents"
           counter="1000"
           outline

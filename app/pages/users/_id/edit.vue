@@ -34,7 +34,7 @@
             ref="image"
             v-on:change="onFilePicked"
           >
-          <div class="caption mt-2" style="color: gray;">アイコンをクリックして編集してください。</div>
+          <div class="caption mt-2" style="color: gray;">アイコンも変更できるよ</div>
         </v-flex>
       </v-layout>
       <v-card-text>

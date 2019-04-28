@@ -29,7 +29,7 @@ import MobileFooter from '@/components/mobile-footer'
 export default {
   data() {
     return {
-      width: window.parent.screen.width
+      width: window.innerWidth
     }
   },
   components : {
@@ -40,7 +40,7 @@ export default {
   },
   created() {
     console.log('default created')
-    console.log('window.parent.screen.width', window.parent.screen.width)
+    console.log('window.parent.screen.width', window.innerWidth)
   },
   methods: {
     gotoHome() {
