@@ -34,7 +34,7 @@
             ref="image"
             v-on:change="onFilePicked"
           >
-          <div class="caption mt-0" style="color: gray;">アイコンをクリックして編集してください。</div>
+          <div class="caption mt-2" style="color: gray;">アイコンをクリックして編集してください。</div>
         </v-flex>
       </v-layout>
       <v-card-text>
@@ -74,23 +74,31 @@ export default {
   data() {
     return {
       user: this.$store.getters['user/user'],
-      userInfo: this.$store.getters['user/userInfo'],
+      info: this.$store.getters['user/info'],
       uid: this.$store.getters['user/user'].uid,
       imageName: '',
       imageUrl: '',
       imageFile: '',
       sampleImageUrl: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/account_sample.png?alt=media&token=224e7297-5fe7-4c2a-9fc1-b43315e3c9c8',
       username: this.$store.getters['user/user'].username,
-      profile: this.$store.getters['user/userInfo'].profile
+      profile: this.$store.getters['user/info'].profile
     }
   },
   mounted() {
-    console.log('mounted', this.user)
+    console.log('Account edit mounted', this.$store.getters['user/info'])
+    this.$store.subscribe((mutation, state) => {
+    })
   },
   methods: {
     doEdit () {
       console.log('doEdit')
       const uid = this.uid, username = this.username, profile = this.profile, router = this.$router, store = this.$store
+      const userObj = {
+        uid: this.uid,
+        email: this.user.email,
+        username: this.username,
+        userImage: this.user.userImage
+      }
       if (this.imageFile) {
         const uploadTask = storage.ref().child("users").child(uid).put(this.imageFile)
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
@@ -121,48 +129,53 @@ export default {
           uploadTask.snapshot.ref.getDownloadURL()
             .then((downloadURL) => {
               console.log('File available at', downloadURL);
-              const user = {
+              const updateUserObj = {
                 username: username,
                 profile: profile,
                 image_url: downloadURL,
                 update_at: getTimestamp()
               }
-              db.collection("users").doc(uid).update(user)
-                .then(function (doc) {
-                  store.commit('user/setUserInfo', doc.data())
-                  console.log("Update User Info Success")
-                  auth.currentUser.updateProfile({
-                    displayName: username,
-                    photoURL: downloadURL
+              db.collection("users").doc(uid).update(updateUserObj)
+                .then(function () {
+                  db.collection("users").doc(uid).get().then(doc => {
+                    store.commit('user/setInfo', doc.data())
+                    console.log("Update User Info Success")
+                    auth.currentUser.updateProfile({
+                      displayName: username,
+                      photoURL: downloadURL
+                    })
+                      .then(function() {
+                        console.log("Update User Info Success")
+                        userObj.userImage = downloadURL
+                        store.commit("user/setUser", userObj)
+                        router.push({ path: `/users/${uid}` })
+                      })
+                      .catch(function(error) {
+                        console.log('updateProfile error: ', error)
+                      })
                   })
-                    .then(function() {
-                      console.log("Update User Info Success")
-                      router.push({ path: `/users/${uid}` })
-                    })
-                    .catch(function(error) {
-                      console.log('updateProfile error: ', error)
-                    })
-                })
-                .catch(function (error) {
-                  console.log('error post: ', error)
+                  .catch(function (error) {
+                    console.log('error post: ', error)
+                  })
                 })
           })
         })
       } else {
-        const user = {
+        const updateUserObj = {
           username: username,
           profile: profile ? profile : '',
           update_at: getTimestamp()
         }
-        db.collection("users").doc(uid).update(user)
+        db.collection("users").doc(uid).update(updateUserObj)
           .then(function () {
             db.collection("users").doc(uid).get().then(doc => {
-              store.commit('user/setUserInfo', doc.data())
+              store.commit('user/setInfo', doc.data())
               auth.currentUser.updateProfile({
                 displayName: username,
               })
                 .then(function() {
                   console.log("Update User Info Success")
+                  store.commit("user/setUser", userObj)
                   router.push({ path: `/users/${uid}` })
                 })
                 .catch(function(error) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 pt-5">
+  <div class="pt-5">
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md6 xg4>
           <v-card>
@@ -12,7 +12,7 @@
             <span style="color: gray;" class="caption">~ 挑戦と応援をつなぐ ~</span>
               </v-layout>
             <v-card-text class="pb-0">
-              <v-form class="mx-5">
+              <v-form class="account_form my-0">
                 <v-text-field
                   v-model="email"
                   :counter="32"
@@ -31,7 +31,7 @@
               </v-form>
               <div
                 class="text-xs-right"
-                >
+              >
                 <v-btn
                 v-on:click="gotoResetPassword"
                 flat
@@ -77,6 +77,7 @@ export default {
   },
   methods : {
     doLogin() {
+      this.$nuxt.$loading.start()
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(user => {
         db.collection('/users')
@@ -93,7 +94,8 @@ export default {
                 username: user.user.displayName,
                 userImage: user.user.photoURL,
               })
-              this.$store.commit('user/setUserInfo', userSnapshot)
+              this.$store.commit('user/setInfo', userSnapshot)
+              this.$nuxt.$loading.finish()
               this.$router.push("/")
             } else {
               console.log("No user");
@@ -115,3 +117,17 @@ export default {
   }
 }
 </script>
+
+<style>
+@media screen and (max-width: 600px) {
+  .account_form {
+    padding: 0;
+    margin: 0;
+  }
+}
+@media screen and (min-width: 601px) {
+  .account_form {
+    margin: 10%;
+  }
+}
+</style>

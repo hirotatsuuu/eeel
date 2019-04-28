@@ -3,7 +3,7 @@
     <v-card style="margin-top: 100px;">
       <v-layout justify-center>
         <v-flex
-          v-if="this.$store.getters['user/user']"
+          v-if="this.user"
           text-xs-center
         >
           <v-avatar
@@ -30,12 +30,12 @@
       </v-layout>
       <v-card-title>
         <v-layout justify-center>
-          <div class="title">{{ user.username }}</div>
+          <div class="title">{{ user ? user.username : '' }}</div>
         </v-layout>
       </v-card-title>
       <v-card-text>
         <v-layout justify-center>
-          <div v-if="userInfo.profile">{{ userInfo.profile }}</div>
+          <div v-if="info ? info.profile : false">{{ info.profile }}</div>
           <div v-else style="color: gray;" class="caption">プロフィールがありません。</div>
         </v-layout>
       </v-card-text>
@@ -53,17 +53,30 @@
 
 <script>
 import firebase from '~/plugins/firebase'
+import { mapGetters } from 'vuex'
 
 export default {
   middleware: 'authenticated',
   data() {
     return {
-      user: this.$store.getters['user/user'],
-      userInfo: this.$store.getters['user/userInfo']
+      user: '',
+      info: ''
     }
+  },
+  computed: {
+    ...mapGetters({
+      getUser: ['user/user'],
+      getInfo: ['user/info']
+    })
   },
   mounted() {
     console.log('user mounted', this.user)
+    this.$store.subscribe((mutation, state) => {
+      this.user = this.getUser
+      this.info = this.getInfo
+    })
+    this.user = this.getUser
+    this.info = this.getInfo
   },
   methods: {
     gotoEdit() {

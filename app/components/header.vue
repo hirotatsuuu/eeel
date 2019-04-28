@@ -101,8 +101,10 @@
 
 <script>
 import firebase from '~/plugins/firebase'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 export default {
+  middleware: 'authenticated',
   data() {
     return {
       links: [
@@ -130,8 +132,16 @@ export default {
       user: this.$store.getters['user/user']
     }
   },
-  mounted() {
-    console.log('header', this.$store.getters['user/user'])
+  computed: {
+    ...mapGetters({
+      getUser: ['user/user']
+    }),
+  },
+  created () {
+    console.log('header created', this.user)
+    this.$store.subscribe((mutation, state) => {
+      this.user = this.getUser
+    })
   },
   methods: {
     gotoHome() {
@@ -141,8 +151,8 @@ export default {
       this.$router.push("/posts/create")
     },
     gotoMyAccount () {
-      console.log('gotoMyAccount', this.$store.getters['user/user'])
-      this.$router.push("/users/" + this.$store.getters['user/user'].uid)
+      console.log('gotoMyAccount', this.user)
+      this.$router.push("/users/" + this.user.uid)
     },
     gotoSettings() {
       this.$router.push("/settings")

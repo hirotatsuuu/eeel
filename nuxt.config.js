@@ -50,7 +50,7 @@ export default {
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/firebase.js',
-    { src: "~plugins/persistedstate.js", ssr: false }
+    { src: "@/plugins/persistedstate.js", ssr: false }
   ],
 
   /*

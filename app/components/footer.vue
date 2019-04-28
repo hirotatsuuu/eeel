@@ -1,7 +1,6 @@
 <template>
   <v-footer
     height="auto"
-    app
   >
     <v-container mx-auto>
       <v-layout wrap>

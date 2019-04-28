@@ -1,6 +1,6 @@
 export const state = () => ({
   user: null,
-  userInfo: null
+  info: null,
 })
 
 export const mutations = {
@@ -11,32 +11,29 @@ export const mutations = {
       state.user = null
     }
   },
-  setUserInfo (state, payload) {
+  setInfo (state, payload) {
     if (payload) {
-      state.userInfo = payload
+      state.info = payload
     } else {
-      state.userInfo = null
+      state.info = null
     }
-  }
+  },
 }
 
 export const actions = {
   setUser ({ commit }, payload) {
     commit('setUser', payload)
   },
-  setUserInfo ({ commit }, payload) {
-    commit('setUserInfo', payload)
-  }
+  setInfo ({ commit }, payload) {
+    commit('setInfo', payload)
+  },
 }
 
 export const getters = {
   user: state => {
     return state.user
   },
-  isAuthenticated (state) {
-    return !!state.user
+  info: state => {
+    return state.info
   },
-  userInfo: state => {
-    return state.userInfo
-  }
 }

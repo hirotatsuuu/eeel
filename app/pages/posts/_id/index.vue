@@ -145,7 +145,6 @@
 import firebase, { db } from '~/plugins/firebase'
 
 export default {
-  layout: 'header',
   middleware: 'authenticated',
   data() {
     return {
