@@ -40,9 +40,17 @@ $ firebase deploy
 
 ```
 
+or
+
+```bash
+$ yarn deploy
+
+```
+
 ## Reference
 - https://jp.vuejs.org
 - https://nuxtjs.org
 - https://vuex.vuejs.org
+- https://router.vuejs.org
 - https://vuetifyjs.com
 - https://firebase.google.com

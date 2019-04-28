@@ -50,19 +50,29 @@
           <v-layout justify-center align-center text-xs-center>
             <v-flex>
               <v-btn
+                flat
               >eeelについて</v-btn>
             </v-flex>
           </v-layout>
           <v-layout justify-center align-center text-xs-center>
             <v-flex>
               <v-btn
+                flat
               >プライバシーポリシー</v-btn>
             </v-flex>
           </v-layout>
           <v-layout justify-center align-center text-xs-center>
             <v-flex>
               <v-btn
+                flat
               >利用規約</v-btn>
+            </v-flex>
+          </v-layout>
+          <v-layout justify-center align-center text-xs-center>
+            <v-flex>
+              <v-btn
+                flat
+              >お問い合わせ</v-btn>
             </v-flex>
           </v-layout>
         </v-card>

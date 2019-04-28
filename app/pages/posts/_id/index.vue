@@ -4,7 +4,7 @@
       <v-flex
         v-if="this.$store.getters['post/post']"
       >
-        <v-card>
+        <v-card class="mb-3">
           <v-img
             :src="this.$store.getters['post/post'].post_image_url"
             height="300"
@@ -34,7 +34,9 @@
                 justify-end
               >
                 <v-btn
-                  flat
+                  round
+                  dark
+                  color="red"
                   v-on:click="doCheer"
                 >
                   <v-icon>favorite</v-icon>
@@ -47,94 +49,91 @@
             <span style="white-space:pre-wrap; word-wrap:break-word;">{{ this.$store.getters['post/post'] ? this.$store.getters['post/post'].contents : null }}</span>
           </v-card-text>
         </v-card>
-        <v-card style="margin-top: 15px;">
-          <v-card-title>
+        <v-layout justify-center align-center text-xs-center>
+          <v-flex>
             <span
               class="title"
-              style="margin-right: 10px;"
-            >コメント</span>
-            <v-divider />
-          </v-card-title>
+            >寄せられた応援</span>
+          </v-flex>
+        </v-layout>
+        <v-divider class="mx-5 mb-3"/>
+        <v-card style="margin: 5px;">
           <v-card-text>
-            <v-card style="margin: 5px;">
-              <v-card-text>
-                <div>// コメント内容</div>
-              </v-card-text>
-              <v-card-actions>
-                <v-list-tile class="grow">
-                  <v-list-tile-avatar color="grey darken-3">
-                    <v-img
-                      class="elevation-6"
-                      src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                    ></v-img>
-                  </v-list-tile-avatar>
-
-                  <v-list-tile-content>
-                    <v-list-tile-title>Evan You</v-list-tile-title>
-                  </v-list-tile-content>
-
-                  <v-layout
-                    align-center
-                    justify-end
-                  >
-                    <v-icon class="mr-1">favorite</v-icon>
-                  </v-layout>
-                </v-list-tile>
-              </v-card-actions>
-            </v-card>
-            <v-card style="margin: 5px;">
-              <v-card-text>
-                <div>// コメント内容</div>
-              </v-card-text>
-              <v-card-actions>
-                <v-list-tile class="grow">
-                  <v-list-tile-avatar color="grey darken-3">
-                    <v-img
-                      class="elevation-6"
-                      src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                    ></v-img>
-                  </v-list-tile-avatar>
-
-                  <v-list-tile-content>
-                    <v-list-tile-title>Evan You</v-list-tile-title>
-                  </v-list-tile-content>
-
-                  <v-layout
-                    align-center
-                    justify-end
-                  >
-                    <v-icon class="mr-1">favorite</v-icon>
-                  </v-layout>
-                </v-list-tile>
-              </v-card-actions>
-            </v-card>
-            <v-card style="margin: 5px;">
-              <v-card-text>
-                <div>// コメント内容</div>
-              </v-card-text>
-              <v-card-actions>
-                <v-list-tile class="grow">
-                  <v-list-tile-avatar color="grey darken-3">
-                    <v-img
-                      class="elevation-6"
-                      src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                    ></v-img>
-                  </v-list-tile-avatar>
-
-                  <v-list-tile-content>
-                    <v-list-tile-title>Evan You</v-list-tile-title>
-                  </v-list-tile-content>
-
-                  <v-layout
-                    align-center
-                    justify-end
-                  >
-                    <v-icon class="mr-1">favorite</v-icon>
-                  </v-layout>
-                </v-list-tile>
-              </v-card-actions>
-            </v-card>
+            <div>// コメント内容</div>
           </v-card-text>
+          <v-card-actions>
+            <v-list-tile class="grow">
+              <v-list-tile-avatar color="grey darken-3">
+                <v-img
+                  class="elevation-6"
+                  src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                ></v-img>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>Evan You</v-list-tile-title>
+              </v-list-tile-content>
+
+              <v-layout
+                align-center
+                justify-end
+              >
+                <v-icon class="mr-1">favorite</v-icon>
+              </v-layout>
+            </v-list-tile>
+          </v-card-actions>
+        </v-card>
+        <v-card style="margin: 5px;">
+          <v-card-text>
+            <div>// コメント内容</div>
+          </v-card-text>
+          <v-card-actions>
+            <v-list-tile class="grow">
+              <v-list-tile-avatar color="grey darken-3">
+                <v-img
+                  class="elevation-6"
+                  src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                ></v-img>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>Evan You</v-list-tile-title>
+              </v-list-tile-content>
+
+              <v-layout
+                align-center
+                justify-end
+              >
+                <v-icon class="mr-1">favorite</v-icon>
+              </v-layout>
+            </v-list-tile>
+          </v-card-actions>
+        </v-card>
+        <v-card style="margin: 5px;">
+          <v-card-text>
+            <div>// コメント内容</div>
+          </v-card-text>
+          <v-card-actions>
+            <v-list-tile class="grow">
+              <v-list-tile-avatar color="grey darken-3">
+                <v-img
+                  class="elevation-6"
+                  src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                ></v-img>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title>Evan You</v-list-tile-title>
+              </v-list-tile-content>
+
+              <v-layout
+                align-center
+                justify-end
+              >
+                <v-icon class="mr-1">favorite</v-icon>
+              </v-layout>
+            </v-list-tile>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>

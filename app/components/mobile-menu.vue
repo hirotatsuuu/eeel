@@ -21,19 +21,18 @@
       <v-btn
         fab
         dark
-        color="green"
-        v-on:click="gotoMyAccount"
-      >
-        <v-icon>person</v-icon>
-      </v-btn>
-      <v-btn
-        fab
-        dark
-        small
         color="indigo"
         v-on:click="gotoHome"
       >
         <v-icon>home</v-icon>
+      </v-btn>
+      <v-btn
+        fab
+        dark
+        color="green"
+        v-on:click="gotoMyAccount"
+      >
+        <v-icon>person</v-icon>
       </v-btn>
       <v-btn
         fab
