@@ -9,6 +9,7 @@
               style="display: none"
               ref="image"
               v-on:change="onFilePicked"
+              :disabled="isDisabled"
             >
               <v-container v-if="imageUrl" grid-list-md text-xs-center class="py-0">
                 <img
@@ -32,6 +33,7 @@
               outline
               counter="32"
               maxlength="32"
+              :disabled="isDisabled"
             ></v-text-field>
             <v-flex>
               <v-textarea
@@ -42,6 +44,7 @@
                 rows="10"
                 counter="1000"
                 maxlength="1000"
+                :disabled="isDisabled"
               ></v-textarea>
             </v-flex>
             <v-btn
@@ -50,7 +53,7 @@
               large
               color="red"
               round
-              :disabled="!(!!title && !!contents && !!imageFile)"
+              :disabled="!(!!title && !!contents && !!imageFile) || isDisabled"
             >挑戦する</v-btn>
           </v-container>
         </v-card>
@@ -72,6 +75,7 @@ export default {
       imageUrl: '',
       imageFile: '',
       postSampleImageUrl: '@/assets/images/post_sample_image.png',
+      isDisabled: false
     }
   },
   methods: {
@@ -96,6 +100,7 @@ export default {
     },
     createPost() {
       console.log('createPost')
+      this.isDisabled = true
       const post = {
         uid: this.$store.getters['user/user'].uid,
         username: this.$store.getters['user/user'].username,
@@ -126,7 +131,7 @@ export default {
       console.log('uploadImg', pid, this.imageFile)
       const uploadTask = storage.ref().child("posts").child(pid).put(this.imageFile)
       uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-        function(snapshot) {
+        (snapshot) => {
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log('Upload is ' + progress + '% done');
@@ -138,7 +143,7 @@ export default {
               console.log('Upload is running');
               break;
           }
-        }, function(error) {
+        }, (error) => {
 
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
@@ -155,22 +160,24 @@ export default {
             // Unknown error occurred, inspect error.serverResponse
             break;
         }
-      }, function() {
+      }, () => {
         // Upload completed successfully, now we can get the download URL
-        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-          console.log('File available at', downloadURL);
-          const post = {
-            post_image_url: downloadURL,
-          }
-          db.collection("posts").doc(pid).set(post, {merge: true})
-            .then(function (doc) {
-              console.log("Create Post Fin!!!!!!!!!!!!!!!!", doc)
-            })
-            .catch(function (error) {
-              console.log('error post: ', error)
-            })
-        });
-      });
+        uploadTask.snapshot.ref.getDownloadURL()
+          .then((downloadURL) => {
+            console.log('File available at', downloadURL);
+            const post = {
+              post_image_url: downloadURL,
+            }
+            db.collection("posts").doc(pid).set(post, {merge: true})
+              .then(() => {
+                console.log("Create Post Fin!!!!!!!!!!!!!!!!")
+                this.isDisabled = false
+              })
+              .catch((error) => {
+                console.log('error post: ', error)
+              })
+        })
+      })
     }
   }
 }

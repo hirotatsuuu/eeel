@@ -112,7 +112,13 @@
           </v-flex>
         </v-layout>
         <v-divider class="mx-5 mb-3"/>
-        <v-layout v-if="comments.length == 0" justify-center align-center text-xs-center>
+        <v-layout
+          v-if="comments.length == 0"
+          justify-center
+          align-center
+          text-xs-center
+          class="mb-3"
+        >
           <v-flex>
             <span style="color: gray;">まだ応援コメントはありません</span>
           </v-flex>

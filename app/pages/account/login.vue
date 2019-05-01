@@ -28,16 +28,16 @@
                   prepend-icon="lock"
                   @click:append="show_password = !show_password"
                 ></v-text-field>
-              </v-form>
               <div
                 class="text-xs-right"
               >
                 <v-btn
-                v-on:click="gotoResetPassword"
-                flat
-                small
-              ><span style="color: gray;" class="caption mx-4">パスワードを忘れた方はこちら</span></v-btn>
-              </div>
+                  v-on:click="gotoResetPassword"
+                  flat
+                  small
+                ><span style="color: gray;" class="caption">パスワードを忘れた方はこちら</span></v-btn>
+                </div>
+              </v-form>
             </v-card-text>
             <v-card-actions class="pb-0">
               <v-layout align-center justify-center>

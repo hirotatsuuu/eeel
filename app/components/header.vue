@@ -38,6 +38,7 @@
         append-icon="search"
         label="キーワード検索"
         style="margin-top: 10px; margin-left: 15px; margin-right: -5px;"
+        disabled
       ></v-text-field>
       </div>
       <v-menu offset-y open-on-hover>

@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex
         v-for="post in $store.getters['post/posts']"
-        :key="post.title"
+        :key="post.id"
         xs12 sm6 md4
       >
         <v-card
