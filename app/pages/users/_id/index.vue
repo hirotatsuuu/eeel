@@ -44,6 +44,8 @@
           <v-btn
             v-on:click="gotoEdit"
             dark
+            round
+            large
           >プロフィールを編集する</v-btn>
         </v-layout>
       </v-card-actions>

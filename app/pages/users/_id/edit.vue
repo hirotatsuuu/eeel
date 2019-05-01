@@ -44,21 +44,26 @@
             box
             outline
             counter="32"
+            maxlength="32"
           ></v-text-field>
           <v-textarea
             box
             label="プロフィールを入力しましょう。"
             v-model="profile"
-            counter="140"
             outline
             rows="10"
+            counter="140"
+            maxlength="140"
           ></v-textarea>
       </v-card-text>
       <v-card-actions>
         <v-layout justify-center>
           <v-btn
             v-on:click="doEdit"
-            dark
+            outline
+            round
+            large
+            :disabled="!(!!username && !!profile)"
           >プロフィールを保存する</v-btn>
         </v-layout>
       </v-card-actions>

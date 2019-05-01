@@ -1,86 +1,61 @@
 <template>
   <div>
     <v-layout class="ma-1">
-      <v-flex>
+      <v-flex text-xs-center>
         <v-card>
-          <v-img
-            :src="imageUrl ? imageUrl : postSample"
-            height="200px"
-          >
-          </v-img>
-          <v-card-title>
-            <span
-              class="title"
-            >{{ title ? title : sampleTitle }}</span>
-          </v-card-title>
-          <v-card-actions>
-            <v-list-tile class="grow">
-              <v-list-tile-avatar>
-                <v-img
-                  class="elevation-6"
-                  :src="accountSample"
-                ></v-img>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-                <v-list-tile-title>hirotatsu</v-list-tile-title>
-              </v-list-tile-content>
-              <v-spacer></v-spacer>
-              <v-btn icon @click="show = !show">
-                <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-              </v-btn>
-            </v-list-tile>
-          </v-card-actions>
-          <v-slide-y-transition>
-            <v-card-text v-show="show">
-              <span style="white-space:pre-wrap; word-wrap:break-word;">{{ contents }}</span>
-            </v-card-text>
-          </v-slide-y-transition>
+          <div style="cursor: pointer;" v-on:click="pickFile" class="pt-3">
+            <input
+              type="file"
+              style="display: none"
+              ref="image"
+              v-on:change="onFilePicked"
+            >
+              <v-container v-if="imageUrl" grid-list-md text-xs-center class="py-0">
+                <img
+                  :src="imageUrl"
+                  style="height: auto; width: 100%; max-height: 500px; object-fit: contain;"
+                >
+              </v-container>
+              <v-container  v-else text-xs-center class="py-0">
+                <img
+                  src="@/assets/images/post_sample_image.png"
+                  style="height: auto; width: 100%;  max-height: 500px; object-fit: contain;"
+                >
+              </v-container>
+            </div>
+          <v-divider style="margin: 15px 30px;"/>
+          <v-container class="pt-0">
+            <v-text-field
+              v-model="title"
+              label="あなたの挑戦をひとことで表すと？"
+              box
+              outline
+              counter="32"
+              maxlength="32"
+            ></v-text-field>
+            <v-flex>
+              <v-textarea
+                box
+                label="あなたの挑戦をくわしく教えてほしいな"
+                v-model="contents"
+                outline
+                rows="10"
+                counter="1000"
+                maxlength="1000"
+              ></v-textarea>
+            </v-flex>
+            <v-btn
+              v-on:click="createPost"
+              outline
+              large
+              color="red"
+              round
+              :disabled="!(!!title && !!contents && !!imageFile)"
+            >挑戦する</v-btn>
+          </v-container>
         </v-card>
       </v-flex>
     </v-layout>
-
-    <v-divider style="margin: 30px" />
-    <v-container grid-list-md text-xs-center class="py-0">
-      <v-text-field
-        v-model="title"
-        label="あなたの挑戦をひとことで表すと？"
-        autofocus
-        box
-        outline
-        counter="32"
-      ></v-text-field>
-      <v-flex>
-        <v-textarea
-          box
-          label="あなたの挑戦をくわしく教えてほしいな"
-          v-model="contents"
-          counter="1000"
-          outline
-          rows="10"
-        ></v-textarea>
-      </v-flex>
-      <v-btn
-        outline
-        large
-        v-on:click="pickFile"
-        v-model="imageName"
-      >
-        <v-icon>add_photo_alternate</v-icon>
-        <strong style="margin-left: 5px;">画像アップロード</strong>
-        <input
-          type="file"
-          style="display: none"
-          ref="image"
-          v-on:change="onFilePicked"
-        >
-      </v-btn>
-      <v-btn
-        v-on:click="createPost"
-        outline
-        large
-        color="red"
-      >挑戦する</v-btn>
-    </v-container>
   </div>
 </template>
 
@@ -93,15 +68,10 @@ export default {
     return {
       title: '',
       contents: '',
-      src: '',
-      dialog: false,
       imageName: '',
       imageUrl: '',
       imageFile: '',
-      sampleTitle: '〇〇に挑戦します！',
-      accountSample: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/account_sample.png?alt=media&token=224e7297-5fe7-4c2a-9fc1-b43315e3c9c8',
-      postSample: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/post_sample.png?alt=media&token=d72afff6-5f94-4d2b-b39a-47b79c0241a4',
-      show: false,
+      postSampleImageUrl: '@/assets/images/post_sample_image.png',
     }
   },
   methods: {
@@ -122,10 +92,6 @@ export default {
           this.imageFile = files[0] // this is an image file that can be sent to server...
           console.log('imageFile', this.imageFile)
         })
-      } else {
-        this.imageName = ''
-        this.imageFile = ''
-        this.imageUrl = ''
       }
     },
     createPost() {
@@ -133,7 +99,7 @@ export default {
       const post = {
         uid: this.$store.getters['user/user'].uid,
         username: this.$store.getters['user/user'].username,
-        user_image_url: this.$store.getters['user/isUserImage'] ? this.$store.getters['user/userImage'] : null,
+        user_image_url: this.$store.getters['user/user'].userImage ? this.$store.getters['user/user'].userImage : null,
         post_image_url: null,
         title: this.title,
         contents: this.contents,
