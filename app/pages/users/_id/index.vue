@@ -15,7 +15,7 @@
           >
             <img
               :src="user.userImage"
-              style="object-fit: cover; border-radius: 100px"
+              style="object-fit: cover; border-radius: 100px;"
             >
           </v-avatar>
           <v-avatar

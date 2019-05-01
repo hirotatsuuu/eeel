@@ -95,7 +95,7 @@
                   large
                   color="red"
                   v-on:click="doComment"
-                  :disabled="isCommentButtonDisabled"
+                  :disabled="!(!!comment) || isCommentButtonDisabled"
                 >
                   <strong>がんばれ！</strong>
                 </v-btn>
@@ -112,6 +112,11 @@
           </v-flex>
         </v-layout>
         <v-divider class="mx-5 mb-3"/>
+        <v-layout v-if="comments.length == 0" justify-center align-center text-xs-center>
+          <v-flex>
+            <span style="color: gray;">まだ応援コメントはありません</span>
+          </v-flex>
+        </v-layout>
         <v-card
           v-for="comment in comments"
           :key="comment.cid"

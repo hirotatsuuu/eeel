@@ -3,7 +3,7 @@
     <v-card style="margin-top: 100px;">
       <v-layout justify-center>
         <v-flex
-          v-if="this.$store.getters['user/user']"
+          v-if="this.user && this.info"
           text-xs-center
         >
           <v-avatar
@@ -63,7 +63,7 @@
             outline
             round
             large
-            :disabled="!(!!username && !!profile)"
+            :disabled="!(!!username && !!profile) || isEditButtonDisabled"
           >プロフィールを保存する</v-btn>
         </v-layout>
       </v-card-actions>
@@ -78,28 +78,36 @@ export default {
   middleware: 'authenticated',
   data() {
     return {
-      user: this.$store.getters['user/user'],
-      info: this.$store.getters['user/info'],
-      uid: this.$store.getters['user/user'].uid,
+      user: '',
+      info: '',
+      username: '',
+      profile: '',
       imageName: '',
       imageUrl: '',
       imageFile: '',
-      sampleImageUrl: 'https://firebasestorage.googleapis.com/v0/b/eeel-app.appspot.com/o/account_sample.png?alt=media&token=224e7297-5fe7-4c2a-9fc1-b43315e3c9c8',
-      username: this.$store.getters['user/user'].username,
-      profile: this.$store.getters['user/info'].profile
+      isEditButtonDisabled: false
     }
   },
-  mounted() {
+  created() {
     console.log('Account edit mounted', this.$store.getters['user/info'])
     this.$store.subscribe((mutation, state) => {
+      this.user = this.$store.getters['user/user']
+      this.info = this.$store.getters['user/info']
+      this.username = this.user ? this.user.username : null
+      this.profile = this.info ? this.info.profile : null
     })
+    this.user = this.$store.getters['user/user']
+    this.info = this.$store.getters['user/info']
+    this.username = this.user ? this.user.username : null
+    this.profile = this.info ? this.info.profile : null
   },
   methods: {
     doEdit () {
       console.log('doEdit')
-      const uid = this.uid, username = this.username, profile = this.profile, router = this.$router, store = this.$store
+      this.isEditButtonDisabled = true
+      const uid = this.user.uid, username = this.username, profile = this.profile, router = this.$router, store = this.$store
       const userObj = {
-        uid: this.uid,
+        uid: uid,
         email: this.user.email,
         username: this.username,
         userImage: this.user.userImage
