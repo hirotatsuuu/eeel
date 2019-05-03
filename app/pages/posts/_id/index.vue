@@ -144,8 +144,32 @@
         >
           <v-card v-if="!(!!comment.reply)" class="pb-1">
             <v-card-text>
-              <div>
+              <div v-show="!isEditComment || editKey !== comment.cid">
                 {{ comment.comment }}
+              </div>
+              <div v-show="isEditComment && editKey === comment.cid">
+                <v-textarea
+                  v-model="editComment"
+                  label="「ありがとう」を伝えましょう"
+                  box
+                  outline
+                  auto-grow
+                  rows="5"
+                  counter="1000"
+                  maxlength="1000"
+                ></v-textarea>
+                <v-layout justify-center align-center text-xs-center>
+                  <v-flex class="pb-3">
+                    <v-btn
+                      round
+                      outline
+                      large
+                      v-on:click="doEditComment(comment.cid)"
+                    >
+                      <strong>編集</strong>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
               </div>
             </v-card-text>
             <v-card-actions>
@@ -170,7 +194,7 @@
                   </v-btn>
                   <v-btn
                     icon
-                    v-on:click="() => {show = !show}"
+                    v-on:click="changeReplyComment(comment.cid, comment.comment)"
                     :disabled="comment.is_reply"
                   >
                     <v-icon
@@ -181,7 +205,7 @@
                 <div v-else-if="comment.uid === $store.getters['user/user'].uid">
                   <v-btn
                     icon
-                    v-on:click="doEditComment(comment.cid)"
+                    v-on:click="changeEditComment(comment.cid, comment.comment)"
                   >
                     <v-icon color="grey darken-1">edit</v-icon>
                   </v-btn>
@@ -201,8 +225,32 @@
             >
               <v-card v-if="comment.cid === replyComment.reply">
                 <v-card-text>
-                  <div>
+                  <div v-show="!isEditReply || editKey !== replyComment.cid">
                     {{ replyComment.comment }}
+                  </div>
+                  <div v-show="isEditReply && editKey === replyComment.cid">
+                    <v-textarea
+                      v-model="editReply"
+                      label="「ありがとう」を伝えましょう"
+                      box
+                      outline
+                      auto-grow
+                      rows="5"
+                      counter="1000"
+                      maxlength="1000"
+                    ></v-textarea>
+                    <v-layout justify-center align-center text-xs-center>
+                      <v-flex class="pb-3">
+                        <v-btn
+                          round
+                          outline
+                          large
+                          v-on:click="doEditReply(replyComment.cid)"
+                        >
+                          <strong>編集</strong>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
                   </div>
                 </v-card-text>
                 <v-card-actions>
@@ -216,7 +264,8 @@
                     <v-list-tile-content>
                       <v-list-tile-title>{{ replyComment.username }}</v-list-tile-title>
                     </v-list-tile-content>
-                    <div v-if="$store.getters['use/user'] === replyComment.uid">
+
+                    <div v-if="(post.uid === $store.getters['user/user'].uid || $store.getters['user/user'].uid === comment.uid) && $store.getters['user/user'].uid !== replyComment.uid">
                       <v-btn
                         icon
                       >
@@ -224,21 +273,22 @@
                       </v-btn>
                       <v-btn
                         icon
-                        v-on:click="() => {show = !show}"
+                        v-on:click="changeReplyComment(comment.cid)"
+                        :disabled="replyComment.is_reply"
                       >
                         <v-icon color="grey darken-1">mode_comment</v-icon>
                       </v-btn>
                     </div>
-                    <div v-else>
+                    <div v-else-if="$store.getters['user/user'].uid === replyComment.uid">
                       <v-btn
                         icon
-                        v-on:click="doEditComment(replyComment.cid)"
+                        v-on:click="changeEditReply(replyComment.cid, replyComment.comment)"
                       >
                         <v-icon color="grey darken-1">edit</v-icon>
                       </v-btn>
                       <v-btn
                         icon
-                        v-on:click="doDeleteComment(replyComment.cid)"
+                        v-on:click="doDeleteComment(replyComment.cid, replyComment.reply)"
                       >
                         <v-icon color="grey darken-1">delete</v-icon>
                       </v-btn>
@@ -246,35 +296,35 @@
                   </v-list-tile>
                 </v-card-actions>
               </v-card>
-
-              <!-- コメントリプライ -->
-              <v-slide-y-transition>
-                <v-card-text v-show="show">
-                  <v-textarea
-                    v-model="reply"
-                    label="「ありがとう」を伝えましょう"
-                    box
-                    outline
-                    auto-grow
-                    rows="5"
-                    counter="1000"
-                    maxlength="1000"
-                  ></v-textarea>
-                  <v-layout justify-center align-center text-xs-center>
-                    <v-flex class="pb-3">
-                      <v-btn
-                        round
-                        outline
-                        large
-                        v-on:click="doReplyComment(comment.cid)"
-                      >
-                        <strong>ありがとう</strong>
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-slide-y-transition>
             </div>
+
+            <!-- コメントリプライ -->
+            <v-slide-y-transition v-if="!(!!comment.reply)">
+              <v-card-text v-show="isReplyComment && replyCommentKey === comment.cid">
+                <v-textarea
+                  v-model="reply"
+                  label="「ありがとう」を伝えましょう"
+                  box
+                  outline
+                  auto-grow
+                  rows="5"
+                  counter="1000"
+                  maxlength="1000"
+                ></v-textarea>
+                <v-layout justify-center align-center text-xs-center>
+                  <v-flex class="pb-3">
+                    <v-btn
+                      round
+                      outline
+                      large
+                      v-on:click="doReplyComment(comment.cid)"
+                    >
+                      <strong>返信する</strong>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-slide-y-transition>
           </v-card>
         </div>
       </v-flex>
@@ -293,12 +343,18 @@ export default {
       pid: '',
       checkPid: '',
       isCheerButtonDisabled: true,
-      comment: '',
       isCommentButtonDisabled: true,
+      comment: '',
       comments: [],
-      show: false,
       reply: '',
-      isComment: false
+      replyCommentKey: '',
+      isReplyComment: false,
+      editKey: '',
+      isComment: false,
+      isEditComment: false,
+      editComment: '',
+      isEditReply: false,
+      editReply: '',
     }
   },
   created() {
@@ -332,20 +388,21 @@ export default {
               .then(cDoc => {
                 console.log('comments empty', cDoc.empty)
                 if(!cDoc.empty) {
-                  commentsRef.orderBy('created_at', 'asc').onSnapshot(commentsSnapshot => {
-                    console.log('comments onSnapshot')
-                    const comments = []
-                    commentsSnapshot.forEach(cDoc => {
-                      const comment = cDoc.data()
-                      comment.cid = cDoc.id
-                      comments.push(comment)
+                  commentsRef.orderBy('created_at', 'asc').get()
+                    .then(commentsSnapshot => {
+                      console.log('comments onSnapshot')
+                      const comments = []
+                      commentsSnapshot.forEach(cDoc => {
+                        const comment = cDoc.data()
+                        comment.cid = cDoc.id
+                        comments.push(comment)
+                      })
+                      this.comments = comments
+                      this.checkIsComment()
+                      this.isCheerButtonDisabled = false
+                      this.isCommentButtonDisabled = false
+                      console.log('get Comments', this.comments)
                     })
-                    this.comments = comments
-                    this.checkIsComment()
-                    this.isCheerButtonDisabled = false
-                    this.isCommentButtonDisabled = false
-                    console.log('get Comments', this.comments)
-                  })
                 } else {
                   this.isComment = false
                   this.isCheerButtonDisabled = false
@@ -362,9 +419,12 @@ export default {
     },
     checkIsComment () {
       console.log('checkIsComment')
-      this.comments.forEach(comment => {
+      this.comments.some(comment => {
         if (comment.uid === this.$store.getters['user/user'].uid) {
           this.isComment = true
+          return true
+        } else {
+          this.isComment = false
         }
       })
     },
@@ -466,14 +526,14 @@ export default {
           console.log('undoLikeComment error', error)
         })
     },
-    doReply () {
-      console.log('doReply')
+    changeReplyComment (cid) {
+      console.log('changeReplyComment')
+      this.replyCommentKey = cid
+      this.isReplyComment = !this.isReplyComment
+      this.reply = ''
     },
     doReplyComment (cid) {
       console.log('doReplyComment')
-      if (!this.reply) {
-        return 0
-      }
       const updatePostObj = {
         comment_num: firebase.firestore.FieldValue.increment(1)
       }
@@ -483,6 +543,7 @@ export default {
         image_url: this.$store.getters['user/user'].userImage,
         comment: this.reply,
         reply: cid,
+        is_reply: false,
         is_like: false,
         is_hide: false,
         created_at: firebase.firestore.FieldValue.serverTimestamp(),
@@ -493,19 +554,28 @@ export default {
       }
       const addCommentRef = db.collection("posts").doc(this.pid).collection("comments")
       const updatePostRef = db.collection("posts").doc(this.pid)
-      const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments").doc(cid)
+      const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments")
+      const getLatestByCidRef = db.collection("posts").doc(this.pid).collection("comments").where('reply', '==', cid).orderBy('created_at', 'desc').limit(1)
 
-      addCommentRef.add(addReplyCommentObj)
-        .then(acDoc => {
-          console.log("add comment", acDoc.id)
-          updatePostRef.update(updatePostObj)
-            .then(doc => {
-              console.log("update post")
-              updateCommentRef.update(updateCommentObj)
+
+      updatePostRef.update(updatePostObj)
+        .then(doc => {
+          console.log("update post")
+          getLatestByCidRef.get()
+            .then(glDoc => {
+              console.log('get latest', glDoc)
+              glDoc.forEach(glSnap => {
+                console.log('glSnap', glSnap.id)
+                updateCommentRef.doc(glSnap.id).update(updateCommentObj)
                 .then(ucDoc => {
-                  console.log("update comment")
-                  this.reply = ''
-                  this.getPost()
+                  console.log("update comment", ucDoc)
+                  addCommentRef.add(addReplyCommentObj)
+                    .then(acDoc => {
+                      console.log("add comment", acDoc.id)
+                      this.reply = ''
+                      this.getPost()
+                    })
+                  })
                 })
             })
             .catch(error => {
@@ -515,23 +585,50 @@ export default {
         .catch(error => {
           console.log('add comment', error)
         })
-      this.show = !this.show
+      this.isReplyComment = !this.isReplyComment
+    },
+    changeEditComment (cid, comment) {
+      console.log('changeEditComment')
+      this.editKey = cid
+      this.isEditComment = !this.isEditComment
+      this.editComment = comment
     },
     doEditComment (cid) {
-      console.log('doEditComment')
-      this.show = !this.show
+      console.log('doEditComment', cid, this.editComment)
+      this.isEditComment = !this.isEditComment
     },
-    doDeleteComment (cid) {
+    doDeleteComment (cid, reply) {
       console.log('doDeleteComment')
       db.collection("posts").doc(this.pid).collection("comments").doc(cid).delete()
         .then(() => {
           console.log('delete Cry....')
-          this.getPost()
+          if (!!reply) {
+            db.collection("posts").doc(this.pid).collection("comments").doc(reply).update({ is_reply: false })
+             .then(() => {
+              this.getPost()
+             })
+          } else {
+            this.getPost()
+          }
         })
         .catch(function (error) {
           console.log('error post: ', error)
         })
-    }
+    },
+    changeEditReply (cid, reply) {
+      console.log('changeEditReply')
+      this.editKey = cid
+      this.isEditReply = !this.isEditReply
+      this.editReply = reply
+
+    },
+    doEditReply (cid) {
+      console.log('doEditReply')
+      this.isEditReply = !this.isEditReply
+    },
+    doDeleteReply (cid, reply) {
+      console.log('doDeleteReply')
+    },
   }
 }
 </script>
