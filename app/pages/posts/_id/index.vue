@@ -4,6 +4,7 @@
       <v-flex
         v-if="this.pid && this.pid == this.checkPid"
       >
+        <!-- 挑戦詳細 -->
         <v-card class="mb-5">
           <v-img
             :src="this.post.post_image_url"
@@ -33,7 +34,15 @@
                 align-center
                 justify-end
               >
-                <div v-if="this.post.likes ? this.post.likes.indexOf(this.$store.getters['user/user'].uid) === -1 : true">
+                <div v-if="post.uid === this.$store.getters['user/user'].uid">
+                  <v-icon class="mr-1" :color="post.like_num !== 0 ? 'red' : 'gray'">favorite</v-icon>
+                  <span class="mb-3" style="font-size: 1.5rem;">
+                    <span :style="post.like_num !== 0 ? 'color: red;' : 'color: gray;'">
+                      {{ post.like_num }}
+                    </span>
+                  </span>
+                </div>
+                <div v-else-if="this.post.likes ? this.post.likes.indexOf(this.$store.getters['user/user'].uid) === -1 : true">
                   <v-btn
                     round
                     outline
@@ -65,45 +74,49 @@
           </v-card-text>
         </v-card>
 
-        <v-layout justify-center align-center text-xs-center>
-          <v-flex>
-            <span
-              class="title"
-            >応援コメントをする</span>
-          </v-flex>
-        </v-layout>
-        <v-divider class="mx-5 mb-3"/>
-        <v-card class="mb-5">
-          <v-card-text>
-            <v-textarea
-              v-model="comment"
-              label="応援メッセージを送りましょう"
-              box
-              outline
-              auto-grow
-              rows="5"
-              counter="1000"
-              maxlength="1000"
-            ></v-textarea>
-          </v-card-text>
-          <v-card-actions>
-            <v-layout justify-center align-center text-xs-center>
-              <v-flex class="pb-3">
-                <v-btn
-                  round
-                  outline
-                  large
-                  color="red"
-                  v-on:click="doComment"
-                  :disabled="!(!!comment) || isCommentButtonDisabled"
-                >
-                  <strong>がんばれ！</strong>
-                </v-btn>
-              </v-flex>
-            </v-layout>
-            </v-card-actions>
-        </v-card>
+        <!-- 応援コメントをする -->
+        <div v-if="post.uid !== this.$store.getters['user/user'].uid && !isComment">
+          <v-layout justify-center align-center text-xs-center>
+            <v-flex>
+              <span
+                class="title"
+              >応援コメントをする</span>
+            </v-flex>
+          </v-layout>
+          <v-divider class="mx-5 mb-3"/>
+          <v-card class="mb-5">
+            <v-card-text>
+              <v-textarea
+                v-model="comment"
+                label="応援メッセージを送りましょう"
+                box
+                outline
+                auto-grow
+                rows="5"
+                counter="1000"
+                maxlength="1000"
+              ></v-textarea>
+            </v-card-text>
+              <v-card-actions>
+                <v-layout justify-center align-center text-xs-center>
+                  <v-flex class="pb-3">
+                    <v-btn
+                      round
+                      outline
+                      large
+                      color="red"
+                      v-on:click="doComment"
+                      :disabled="!(!!comment) || isCommentButtonDisabled"
+                    >
+                      <strong>がんばれ！</strong>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-actions>
+          </v-card>
+        </div>
 
+        <!-- 寄せられたコメント -->
         <v-layout justify-center align-center text-xs-center>
           <v-flex>
             <span
@@ -123,41 +136,147 @@
             <span style="color: gray;">まだ応援コメントはありません</span>
           </v-flex>
         </v-layout>
-        <v-card
+        <div
+          v-else
           v-for="comment in comments"
           :key="comment.cid"
           style="margin: 5px;"
         >
-          <v-card-text>
-            <div>{{ comment.comment }}</div>
-          </v-card-text>
-          <v-card-actions>
-            <v-list-tile class="grow">
-              <v-list-tile-avatar color="grey darken-3">
-                <v-img
-                  class="elevation-6"
-                  :src="comment.image_url"
-                ></v-img>
-              </v-list-tile-avatar>
+          <v-card v-if="!(!!comment.reply)" class="pb-1">
+            <v-card-text>
+              <div>
+                {{ comment.comment }}
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-list-tile class="grow">
+                <v-list-tile-avatar color="grey darken-3">
+                  <v-img
+                    class="elevation-6"
+                    :src="comment.image_url"
+                  ></v-img>
+                </v-list-tile-avatar>
 
-              <v-list-tile-content>
-                <v-list-tile-title>{{ comment.username }}</v-list-tile-title>
-              </v-list-tile-content>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ comment.username }}</v-list-tile-title>
+                </v-list-tile-content>
 
-              <v-layout
-                align-center
-                justify-end
-              >
-                <v-btn
-                  icon
-                  v-on:click="!comment.is_like ? doLikeComment(comment.cid) : undoLikeComment(comment.cid)"
-                >
-                  <v-icon :color="comment.is_like ? 'red': 'grey darken-1'">favorite</v-icon>
-                </v-btn>
-              </v-layout>
-            </v-list-tile>
-          </v-card-actions>
-        </v-card>
+                <div v-if="post.uid === $store.getters['user/user'].uid">
+                  <v-btn
+                    icon
+                    v-on:click="!comment.is_like ? doLikeComment(comment.cid) : undoLikeComment(comment.cid)"
+                  >
+                    <v-icon :color="comment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
+                  </v-btn>
+                  <v-btn
+                    icon
+                    v-on:click="() => {show = !show}"
+                    :disabled="comment.is_reply"
+                  >
+                    <v-icon
+                      :color="comment.is_reply ? 'blue' : 'grey darken-1'"
+                    >mode_comment</v-icon>
+                  </v-btn>
+                </div>
+                <div v-else-if="comment.uid === $store.getters['user/user'].uid">
+                  <v-btn
+                    icon
+                    v-on:click="doEditComment(comment.cid)"
+                  >
+                    <v-icon color="grey darken-1">edit</v-icon>
+                  </v-btn>
+                  <v-btn
+                    icon
+                    v-on:click="doDeleteComment(comment.cid)"
+                  >
+                    <v-icon color="grey darken-1">delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-list-tile>
+            </v-card-actions>
+            <div
+              v-for="replyComment in comments"
+              :key="replyComment.cid"
+              class="ma-3"
+            >
+              <v-card v-if="comment.cid === replyComment.reply">
+                <v-card-text>
+                  <div>
+                    {{ replyComment.comment }}
+                  </div>
+                </v-card-text>
+                <v-card-actions>
+                  <v-list-tile class="grow">
+                    <v-list-tile-avatar>
+                      <v-img
+                        class="elevation-6"
+                        :src="replyComment.image_url"
+                      ></v-img>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ replyComment.username }}</v-list-tile-title>
+                    </v-list-tile-content>
+                    <div v-if="$store.getters['use/user'] === replyComment.uid">
+                      <v-btn
+                        icon
+                      >
+                        <v-icon color="grey darken-1">favorite</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        v-on:click="() => {show = !show}"
+                      >
+                        <v-icon color="grey darken-1">mode_comment</v-icon>
+                      </v-btn>
+                    </div>
+                    <div v-else>
+                      <v-btn
+                        icon
+                        v-on:click="doEditComment(replyComment.cid)"
+                      >
+                        <v-icon color="grey darken-1">edit</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        v-on:click="doDeleteComment(replyComment.cid)"
+                      >
+                        <v-icon color="grey darken-1">delete</v-icon>
+                      </v-btn>
+                    </div>
+                  </v-list-tile>
+                </v-card-actions>
+              </v-card>
+
+              <!-- コメントリプライ -->
+              <v-slide-y-transition>
+                <v-card-text v-show="show">
+                  <v-textarea
+                    v-model="reply"
+                    label="「ありがとう」を伝えましょう"
+                    box
+                    outline
+                    auto-grow
+                    rows="5"
+                    counter="1000"
+                    maxlength="1000"
+                  ></v-textarea>
+                  <v-layout justify-center align-center text-xs-center>
+                    <v-flex class="pb-3">
+                      <v-btn
+                        round
+                        outline
+                        large
+                        v-on:click="doReplyComment(comment.cid)"
+                      >
+                        <strong>ありがとう</strong>
+                      </v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-text>
+              </v-slide-y-transition>
+            </div>
+          </v-card>
+        </div>
       </v-flex>
     </v-layout>
   </div>
@@ -176,7 +295,10 @@ export default {
       isCheerButtonDisabled: true,
       comment: '',
       isCommentButtonDisabled: true,
-      comments: []
+      comments: [],
+      show: false,
+      reply: '',
+      isComment: false
     }
   },
   created() {
@@ -205,19 +327,30 @@ export default {
             doc.id == this.pid ? this.$store.commit('post/setPost', doc.data()) : null
             this.checkPid = doc.id
 
-            db.collection('posts').doc(this.pid).collection('comments')
-              .onSnapshot(commentsSnapshot => {
-                console.log('comments onSnapshot')
-                const comments = []
-                commentsSnapshot.forEach(cDoc => {
-                  const comment = cDoc.data()
-                  comment.cid = cDoc.id
-                  comments.push(comment)
-                })
-                this.comments = comments
-                this.isCheerButtonDisabled = false
-                this.isCommentButtonDisabled = false
-                console.log('get Comments', this.comments)
+            const commentsRef = db.collection('posts').doc(this.pid).collection('comments')
+            commentsRef.get()
+              .then(cDoc => {
+                console.log('comments empty', cDoc.empty)
+                if(!cDoc.empty) {
+                  commentsRef.orderBy('created_at', 'asc').onSnapshot(commentsSnapshot => {
+                    console.log('comments onSnapshot')
+                    const comments = []
+                    commentsSnapshot.forEach(cDoc => {
+                      const comment = cDoc.data()
+                      comment.cid = cDoc.id
+                      comments.push(comment)
+                    })
+                    this.comments = comments
+                    this.checkIsComment()
+                    this.isCheerButtonDisabled = false
+                    this.isCommentButtonDisabled = false
+                    console.log('get Comments', this.comments)
+                  })
+                } else {
+                  this.isComment = false
+                  this.isCheerButtonDisabled = false
+                  this.isCommentButtonDisabled = false
+                }
               })
           } else {
             // doc.data() will be undefined in this case
@@ -226,6 +359,14 @@ export default {
         }).catch(function(error) {
           console.log("Error getting document:", error)
         })
+    },
+    checkIsComment () {
+      console.log('checkIsComment')
+      this.comments.forEach(comment => {
+        if (comment.uid === this.$store.getters['user/user'].uid) {
+          this.isComment = true
+        }
+      })
     },
     doCheer () {
       console.log('doCheer')
@@ -274,6 +415,7 @@ export default {
         image_url: this.$store.getters['user/user'].userImage,
         comment: this.comment,
         reply: null,
+        is_reply: false,
         is_like: false,
         is_hide: false,
         created_at: firebase.firestore.FieldValue.serverTimestamp(),
@@ -322,6 +464,72 @@ export default {
         })
         .catch(error => {
           console.log('undoLikeComment error', error)
+        })
+    },
+    doReply () {
+      console.log('doReply')
+    },
+    doReplyComment (cid) {
+      console.log('doReplyComment')
+      if (!this.reply) {
+        return 0
+      }
+      const updatePostObj = {
+        comment_num: firebase.firestore.FieldValue.increment(1)
+      }
+      const addReplyCommentObj = {
+        uid: this.$store.getters['user/user'].uid,
+        username: this.$store.getters['user/user'].username,
+        image_url: this.$store.getters['user/user'].userImage,
+        comment: this.reply,
+        reply: cid,
+        is_like: false,
+        is_hide: false,
+        created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        update_at: firebase.firestore.FieldValue.serverTimestamp()
+      }
+      const updateCommentObj = {
+        is_reply: true
+      }
+      const addCommentRef = db.collection("posts").doc(this.pid).collection("comments")
+      const updatePostRef = db.collection("posts").doc(this.pid)
+      const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments").doc(cid)
+
+      addCommentRef.add(addReplyCommentObj)
+        .then(acDoc => {
+          console.log("add comment", acDoc.id)
+          updatePostRef.update(updatePostObj)
+            .then(doc => {
+              console.log("update post")
+              updateCommentRef.update(updateCommentObj)
+                .then(ucDoc => {
+                  console.log("update comment")
+                  this.reply = ''
+                  this.getPost()
+                })
+            })
+            .catch(error => {
+              console.log('update post', error)
+            })
+        })
+        .catch(error => {
+          console.log('add comment', error)
+        })
+      this.show = !this.show
+    },
+    doEditComment (cid) {
+      console.log('doEditComment')
+      this.show = !this.show
+    },
+    doDeleteComment (cid) {
+      console.log('doDeleteComment')
+      db.collection("posts").doc(this.pid).collection("comments").doc(cid).delete()
+        .then(() => {
+          console.log('delete Cry....')
+          this.getPost()
+        })
+        .catch(function (error) {
+          console.log('error post: ', error)
         })
     }
   }
