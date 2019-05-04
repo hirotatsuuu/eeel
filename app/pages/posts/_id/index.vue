@@ -194,7 +194,7 @@
                   </v-btn>
                   <v-btn
                     icon
-                    v-on:click="changeReplyComment(comment.cid, comment.comment)"
+                    v-on:click="changeReplyComment(comment.cid)"
                     :disabled="comment.is_reply"
                   >
                     <v-icon
@@ -203,6 +203,9 @@
                   </v-btn>
                 </div>
                 <div v-else-if="comment.uid === $store.getters['user/user'].uid">
+                  <v-btn icon style="pointer-events:none;">
+                    <v-icon :color="comment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
+                  </v-btn>
                   <v-btn
                     icon
                     v-on:click="changeEditComment(comment.cid, comment.comment)"
@@ -212,16 +215,19 @@
                   <v-btn
                     icon
                     v-on:click="doDeleteComment(comment.cid)"
+                    :disabled="comment.is_reply"
                   >
                     <v-icon color="grey darken-1">delete</v-icon>
                   </v-btn>
                 </div>
               </v-list-tile>
             </v-card-actions>
+
+            <!-- リプライコメント表示 -->
             <div
               v-for="replyComment in comments"
               :key="replyComment.cid"
-              class="ma-3"
+              class="mx-3 mb-1"
             >
               <v-card v-if="comment.cid === replyComment.reply">
                 <v-card-text>
@@ -268,8 +274,9 @@
                     <div v-if="(post.uid === $store.getters['user/user'].uid || $store.getters['user/user'].uid === comment.uid) && $store.getters['user/user'].uid !== replyComment.uid">
                       <v-btn
                         icon
+                        v-on:click="!replyComment.is_like ? doLikeComment(replyComment.cid) : undoLikeComment(replyComment.cid)"
                       >
-                        <v-icon color="grey darken-1">favorite</v-icon>
+                        <v-icon :color="replyComment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
                       </v-btn>
                       <v-btn
                         icon
@@ -280,6 +287,9 @@
                       </v-btn>
                     </div>
                     <div v-else-if="$store.getters['user/user'].uid === replyComment.uid">
+                      <v-btn icon style="pointer-events:none;">
+                        <v-icon :color="replyComment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
+                      </v-btn>
                       <v-btn
                         icon
                         v-on:click="changeEditReply(replyComment.cid, replyComment.comment)"
@@ -289,6 +299,7 @@
                       <v-btn
                         icon
                         v-on:click="doDeleteComment(replyComment.cid, replyComment.reply)"
+                        :disabled="replyComment.is_reply"
                       >
                         <v-icon color="grey darken-1">delete</v-icon>
                       </v-btn>
@@ -298,7 +309,7 @@
               </v-card>
             </div>
 
-            <!-- コメントリプライ -->
+            <!-- リプライコメントフォーム -->
             <v-slide-y-transition v-if="!(!!comment.reply)">
               <v-card-text v-show="isReplyComment && replyCommentKey === comment.cid">
                 <v-textarea
@@ -333,7 +344,7 @@
 </template>
 
 <script>
-import firebase, { db, getTimestamp } from '~/plugins/firebase'
+import firebase, { db, getTimestamp, getIncrement, getDecrement } from '~/plugins/firebase'
 
 export default {
   middleware: 'authenticated',
@@ -347,7 +358,7 @@ export default {
       comment: '',
       comments: [],
       reply: '',
-      replyCommentKey: '',
+      replyCommentKey: '', // コメント返信フォームを表示するかのフラグ
       isReplyComment: false,
       editKey: '',
       isComment: false,
@@ -376,21 +387,19 @@ export default {
   methods: {
     getPost () {
       console.log('getPost', this.pid)
-      db.collection('posts').doc(this.pid).get()
-        .then(doc => {
+      db.collection('posts').doc(this.pid).onSnapshot(doc => {
           if (doc.exists) {
-            console.log("Document data:", doc, doc.data(), this.$store.getters['post/post'])
+            // console.log("Document data:", doc, doc.data(), this.$store.getters['post/post'])
             doc.id == this.pid ? this.$store.commit('post/setPost', doc.data()) : null
             this.checkPid = doc.id
 
             const commentsRef = db.collection('posts').doc(this.pid).collection('comments')
-            commentsRef.get()
-              .then(cDoc => {
-                console.log('comments empty', cDoc.empty)
+            commentsRef.onSnapshot(cDoc => {
+                // console.log('comments empty', cDoc.empty)
                 if(!cDoc.empty) {
                   commentsRef.orderBy('created_at', 'asc').get()
                     .then(commentsSnapshot => {
-                      console.log('comments onSnapshot')
+                      // console.log('comments onSnapshot')
                       const comments = []
                       commentsSnapshot.forEach(cDoc => {
                         const comment = cDoc.data()
@@ -401,7 +410,7 @@ export default {
                       this.checkIsComment()
                       this.isCheerButtonDisabled = false
                       this.isCommentButtonDisabled = false
-                      console.log('get Comments', this.comments)
+                      // console.log('get Comments', this.comments)
                     })
                 } else {
                   this.isComment = false
@@ -413,8 +422,6 @@ export default {
             // doc.data() will be undefined in this case
             console.log("No such document!")
           }
-        }).catch(function(error) {
-          console.log("Error getting document:", error)
         })
     },
     checkIsComment () {
@@ -432,13 +439,13 @@ export default {
       console.log('doCheer')
       this.isCheerButtonDisabled = true
       const updatePostObj = {
-        like_num: firebase.firestore.FieldValue.increment(1),
-        likes: firebase.firestore.FieldValue.arrayUnion(this.$store.getters['user/user'].uid)
+        like_num: getIncrement(),
+        likes: firebase.firestore.FieldValue.arrayUnion(this.$store.getters['user/user'].uid),
+        update_at: getTimestamp()
       }
       db.collection("posts").doc(this.pid).update(updatePostObj)
         .then(() => {
           console.log('doCheer Done!!!')
-          this.getPost()
         })
         .catch(function (error) {
           console.log('error post: ', error)
@@ -448,13 +455,13 @@ export default {
       console.log('undoCheer')
       this.isCheerButtonDisabled = true
       const updatePostObj = {
-        like_num: firebase.firestore.FieldValue.increment(-1),
-        likes: firebase.firestore.FieldValue.arrayRemove(this.$store.getters['user/user'].uid)
+        like_num: getDecrement(),
+        likes: firebase.firestore.FieldValue.arrayRemove(this.$store.getters['user/user'].uid),
+        update_at: getTimestamp()
       }
       db.collection("posts").doc(this.pid).update(updatePostObj)
         .then(() => {
           console.log('undoCheer Cry....')
-          this.getPost()
         })
         .catch(function (error) {
           console.log('error post: ', error)
@@ -466,8 +473,10 @@ export default {
         return 0
       }
       this.isCommentButtonDisabled = true
+
       const updatePostObj = {
-        comment_num: firebase.firestore.FieldValue.increment(1)
+        comment_num: getIncrement(),
+        update_at: getTimestamp()
       }
       const addCommentObj = {
         uid: this.$store.getters['user/user'].uid,
@@ -478,9 +487,10 @@ export default {
         is_reply: false,
         is_like: false,
         is_hide: false,
-        created_at: firebase.firestore.FieldValue.serverTimestamp(),
-        update_at: firebase.firestore.FieldValue.serverTimestamp()
+        created_at: getTimestamp(),
+        update_at: getTimestamp()
       }
+
       const addCommentRef = db.collection("posts").doc(this.pid).collection("comments")
       const updatePostRef = db.collection("posts").doc(this.pid)
 
@@ -492,7 +502,6 @@ export default {
               console.log("update post")
               this.isCommentButtonDisabled = false
               this.comment = ''
-              this.getPost()
             })
             .catch(error => {
               console.log('update post', error)
@@ -503,12 +512,13 @@ export default {
         })
     },
     doLikeComment (cid) {
-      console.log('doLikeComment')
-      db.collection("posts").doc(this.pid).collection("comments").doc(cid).update({
-        is_like: true
-      })
+      console.log('doLikeComment', cid)
+      const updateObj = {
+        is_like: true,
+        update_at: getTimestamp()
+      }
+      db.collection("posts").doc(this.pid).collection("comments").doc(cid).update(updateObj)
         .then(doc => {
-          this.getPost()
         })
         .catch(error => {
           console.log('doLikeComment error', error)
@@ -516,11 +526,12 @@ export default {
     },
     undoLikeComment (cid) {
       console.log('undoLikeComment')
-      db.collection("posts").doc(this.pid).collection("comments").doc(cid).update({
-        is_like: false
-      })
+      const updateObj = {
+        is_like: false,
+        update_at: getTimestamp()
+      }
+      db.collection("posts").doc(this.pid).collection("comments").doc(cid).update(updateObj)
         .then(doc => {
-          this.getPost()
         })
         .catch(error => {
           console.log('undoLikeComment error', error)
@@ -535,7 +546,8 @@ export default {
     doReplyComment (cid) {
       console.log('doReplyComment')
       const updatePostObj = {
-        comment_num: firebase.firestore.FieldValue.increment(1)
+        comment_num: getIncrement(),
+        update_at: getTimestamp()
       }
       const addReplyCommentObj = {
         uid: this.$store.getters['user/user'].uid,
@@ -546,17 +558,18 @@ export default {
         is_reply: false,
         is_like: false,
         is_hide: false,
-        created_at: firebase.firestore.FieldValue.serverTimestamp(),
-        update_at: firebase.firestore.FieldValue.serverTimestamp()
+        created_at: getTimestamp(),
+        update_at: getTimestamp()
       }
       const updateCommentObj = {
-        is_reply: true
+        is_reply: true,
+        update_at: getTimestamp()
       }
+
       const addCommentRef = db.collection("posts").doc(this.pid).collection("comments")
       const updatePostRef = db.collection("posts").doc(this.pid)
       const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments")
       const getLatestByCidRef = db.collection("posts").doc(this.pid).collection("comments").where('reply', '==', cid).orderBy('created_at', 'desc').limit(1)
-
 
       updatePostRef.update(updatePostObj)
         .then(doc => {
@@ -564,19 +577,31 @@ export default {
           getLatestByCidRef.get()
             .then(glDoc => {
               console.log('get latest', glDoc)
-              glDoc.forEach(glSnap => {
-                console.log('glSnap', glSnap.id)
-                updateCommentRef.doc(glSnap.id).update(updateCommentObj)
-                .then(ucDoc => {
-                  console.log("update comment", ucDoc)
-                  addCommentRef.add(addReplyCommentObj)
-                    .then(acDoc => {
-                      console.log("add comment", acDoc.id)
-                      this.reply = ''
-                      this.getPost()
-                    })
+              if (glDoc.empty) {
+                updateCommentRef.doc(cid).update(updateCommentObj)
+                  .then(ucDoc => {
+                    addCommentRef.add(addReplyCommentObj)
+                      .then(acDoc => {
+                        console.log("add comment", acDoc.id)
+                        this.reply = ''
+                        this.isReplyComment = !this.isReplyComment
+                      })
                   })
+              } else {
+                glDoc.forEach(glSnap => {
+                  console.log('glSnap', glSnap.id)
+                  updateCommentRef.doc(glSnap.id).update(updateCommentObj)
+                    .then(ucDoc => {
+                      console.log("update comment", ucDoc)
+                      addCommentRef.add(addReplyCommentObj)
+                        .then(acDoc => {
+                          console.log("add comment", acDoc.id)
+                          this.reply = ''
+                          this.isReplyComment = !this.isReplyComment
+                        })
+                    })
                 })
+            }
             })
             .catch(error => {
               console.log('update post', error)
@@ -585,7 +610,6 @@ export default {
         .catch(error => {
           console.log('add comment', error)
         })
-      this.isReplyComment = !this.isReplyComment
     },
     changeEditComment (cid, comment) {
       console.log('changeEditComment')
@@ -595,21 +619,62 @@ export default {
     },
     doEditComment (cid) {
       console.log('doEditComment', cid, this.editComment)
-      this.isEditComment = !this.isEditComment
+      const updateObj = {
+        comment: this.editComment,
+        update_at: getTimestamp()
+      }
+
+      const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments")
+
+      updateCommentRef.doc(cid).update(updateObj)
+        .then(() => {
+          console.log('update comment done!!!')
+          this.isEditComment = !this.isEditComment
+        })
+        .catch(function (error) {
+          console.log('error post: ', error)
+        })
     },
     doDeleteComment (cid, reply) {
-      console.log('doDeleteComment')
-      db.collection("posts").doc(this.pid).collection("comments").doc(cid).delete()
+      console.log('doDeleteComment', reply)
+
+      const updatePostObj = {
+        comment_num: firebase.firestore.FieldValue.increment(-1),
+        update_at: getTimestamp()
+      }
+      const updateCommentObj = {
+        is_reply: false,
+        update_at: getTimestamp()
+      }
+
+      const getOldestByReplyRef = !!reply ? db.collection("posts").doc(this.pid).collection("comments").where('reply', '==', reply).orderBy('created_at', 'asc').limit(1) : null
+
+      db.collection("posts").doc(this.pid).update(updatePostObj)
         .then(() => {
-          console.log('delete Cry....')
-          if (!!reply) {
-            db.collection("posts").doc(this.pid).collection("comments").doc(reply).update({ is_reply: false })
-             .then(() => {
-              this.getPost()
-             })
-          } else {
-            this.getPost()
-          }
+          console.log('decrement posts')
+          db.collection("posts").doc(this.pid).collection("comments").doc(cid).delete()
+            .then(() => {
+              console.log('delete Cry....')
+              if (!!reply) {
+                getOldestByReplyRef.get()
+                  .then(goDoc => {
+                    console.log('get Oldest', goDoc)
+                    if (goDoc.empty) {
+                      db.collection("posts").doc(this.pid).collection("comments").doc(reply).update(updateCommentObj)
+                    } else {
+                      goDoc.forEach(goSnap => {
+                        console.log('goSnap.id', goSnap.id)
+                        db.collection("posts").doc(this.pid).collection("comments").doc(goSnap.id).update(updateCommentObj)
+                      })
+                    }
+                  })
+              } else {
+                db.collection("posts").doc(this.pid).collection("comments").doc(cid).update(updateCommentObj)
+              }
+            })
+            .catch(function (error) {
+              console.log('error post: ', error)
+            })
         })
         .catch(function (error) {
           console.log('error post: ', error)
@@ -624,7 +689,20 @@ export default {
     },
     doEditReply (cid) {
       console.log('doEditReply')
-      this.isEditReply = !this.isEditReply
+      const updateObj = {
+        comment: this.editReply,
+        update_at: getTimestamp()
+      }
+      const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments")
+
+      updateCommentRef.doc(cid).update(updateObj)
+        .then(() => {
+          console.log('update reply done!!!')
+          this.isEditReply = !this.isEditReply
+        })
+        .catch(function (error) {
+          console.log('error post: ', error)
+        })
     },
     doDeleteReply (cid, reply) {
       console.log('doDeleteReply')
