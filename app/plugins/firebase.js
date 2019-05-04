@@ -19,7 +19,11 @@ if (!firebase.apps.length) {
 const auth = firebase.auth()
 const db = firebase.firestore()
 const storage = firebase.storage()
-const getTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
+export { auth, db, storage }
 
-export { auth, db, storage, getTimestamp }
+const getTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
+const getIncrement = () => firebase.firestore.FieldValue.increment(1)
+const getDecrement = () => firebase.firestore.FieldValue.increment(-1)
+export { getTimestamp, getIncrement, getDecrement }
+
 export default firebase
