@@ -446,41 +446,43 @@ export default {
     getPost () {
       console.log('getPost', this.pid)
       db.collection('posts').doc(this.pid).onSnapshot(doc => {
-          if (doc.exists) {
-            // console.log("Document data:", doc, doc.data(), this.$store.getters['post/post'])
-            doc.id == this.pid ? this.$store.commit('post/setPost', doc.data()) : null
-            this.checkPid = doc.id
-
-            const commentsRef = db.collection('posts').doc(this.pid).collection('comments')
-            commentsRef.onSnapshot(cDoc => {
-                // console.log('comments empty', cDoc.empty)
-                if(!cDoc.empty) {
-                  commentsRef.orderBy('created_at', 'asc').get()
-                    .then(commentsSnapshot => {
-                      // console.log('comments onSnapshot')
-                      const comments = []
-                      commentsSnapshot.forEach(cDoc => {
-                        const comment = cDoc.data()
-                        comment.cid = cDoc.id
-                        comments.push(comment)
-                      })
-                      this.comments = comments
-                      this.checkIsComment()
-                      this.isCheerButtonDisabled = false
-                      this.isCommentButtonDisabled = false
-                      // console.log('get Comments', this.comments)
-                    })
-                } else {
-                  this.isComment = false
+        if (doc.exists) {
+          // console.log("Document data:", doc, doc.data(), this.$store.getters['post/post'])
+          doc.id == this.pid ? this.$store.commit('post/setPost', doc.data()) : null
+          this.checkPid = doc.id
+          const commentsRef = db.collection('posts').doc(this.pid).collection('comments')
+          commentsRef.onSnapshot(cDoc => {
+            // console.log('comments empty', cDoc.empty)
+            if(!cDoc.empty) {
+              commentsRef.orderBy('created_at', 'asc').get()
+                .then(commentsSnapshot => {
+                  // console.log('comments onSnapshot')
+                  const comments = []
+                  commentsSnapshot.forEach(cDoc => {
+                    const comment = cDoc.data()
+                    comment.cid = cDoc.id
+                    comments.push(comment)
+                  })
+                  this.comments = comments
+                  this.checkIsComment()
                   this.isCheerButtonDisabled = false
                   this.isCommentButtonDisabled = false
-                }
-              })
-          } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!")
-          }
-        })
+                  // console.log('get Comments', this.comments)
+                })
+                .catch(error => {
+                  console.log('error: ', error)
+                })
+            } else {
+              this.isComment = false
+              this.isCheerButtonDisabled = false
+              this.isCommentButtonDisabled = false
+            }
+          })
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!")
+        }
+      })
     },
     checkIsComment () {
       console.log('checkIsComment')
@@ -531,7 +533,6 @@ export default {
         return 0
       }
       this.isCommentButtonDisabled = true
-
       const updatePostObj = {
         comment_num: getIncrement(),
         update_at: getTimestamp()
@@ -548,7 +549,6 @@ export default {
         created_at: getTimestamp(),
         update_at: getTimestamp()
       }
-
       const addCommentRef = db.collection("posts").doc(this.pid).collection("comments")
       const updatePostRef = db.collection("posts").doc(this.pid)
 
@@ -681,7 +681,6 @@ export default {
         comment: this.editComment,
         update_at: getTimestamp()
       }
-
       const updateCommentRef = db.collection("posts").doc(this.pid).collection("comments")
 
       updateCommentRef.doc(cid).update(updateObj)
@@ -695,7 +694,6 @@ export default {
     },
     doDeleteComment (cid, reply) {
       console.log('doDeleteComment', reply)
-
       const updatePostObj = {
         comment_num: firebase.firestore.FieldValue.increment(-1),
         update_at: getTimestamp()
@@ -704,7 +702,6 @@ export default {
         is_reply: false,
         update_at: getTimestamp()
       }
-
       const getOldestByReplyRef = !!reply ? db.collection("posts").doc(this.pid).collection("comments").where('reply', '==', reply).orderBy('created_at', 'asc').limit(1) : null
 
       db.collection("posts").doc(this.pid).update(updatePostObj)
@@ -743,7 +740,6 @@ export default {
       this.editKey = cid
       this.isEditReply = !this.isEditReply
       this.editReply = reply
-
     },
     doEditReply (cid) {
       console.log('doEditReply')
@@ -761,9 +757,6 @@ export default {
         .catch(function (error) {
           console.log('error post: ', error)
         })
-    },
-    doDeleteReply (cid, reply) {
-      console.log('doDeleteReply')
     },
   }
 }
