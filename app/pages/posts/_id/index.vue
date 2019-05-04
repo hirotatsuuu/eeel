@@ -168,6 +168,14 @@
                     >
                       <strong>編集</strong>
                     </v-btn>
+                    <v-btn
+                      round
+                      outline
+                      large
+                      v-on:click="() => {isEditComment = !isEditComment}"
+                    >
+                      <strong>キャンセル</strong>
+                    </v-btn>
                   </v-flex>
                 </v-layout>
               </div>
@@ -206,19 +214,36 @@
                   <v-btn icon style="pointer-events:none;">
                     <v-icon :color="comment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
                   </v-btn>
-                  <v-btn
-                    icon
-                    v-on:click="changeEditComment(comment.cid, comment.comment)"
-                  >
-                    <v-icon color="grey darken-1">edit</v-icon>
-                  </v-btn>
-                  <v-btn
-                    icon
-                    v-on:click="doDeleteComment(comment.cid)"
-                    :disabled="comment.is_reply"
-                  >
-                    <v-icon color="grey darken-1">delete</v-icon>
-                  </v-btn>
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        icon
+                        v-on="on"
+                      >
+                        <v-icon color="grey darken-1">more_vert</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-tile>
+                          <v-btn
+                            icon
+                            v-on:click="changeEditComment(comment.cid, comment.comment)"
+                          >
+                            <v-icon color="grey darken-1">edit</v-icon>
+                          </v-btn>
+                          <v-btn
+                            icon
+                            v-on:click="doDeleteComment(comment.cid)"
+                            :disabled="comment.is_reply"
+                          >
+                            <v-icon color="grey darken-1">delete</v-icon>
+                          </v-btn>
+                          <v-btn icon>
+                            <v-icon color="grey darken-1">report</v-icon>
+                          </v-btn>
+                      </v-list-tile>
+                    </v-list>
+                  </v-menu>
                 </div>
               </v-list-tile>
             </v-card-actions>
@@ -255,6 +280,14 @@
                         >
                           <strong>編集</strong>
                         </v-btn>
+                        <v-btn
+                          round
+                          outline
+                          large
+                          v-on:click="() => {isEditReply = !isEditReply}"
+                        >
+                          <strong>キャンセル</strong>
+                        </v-btn>
                       </v-flex>
                     </v-layout>
                   </div>
@@ -290,19 +323,36 @@
                       <v-btn icon style="pointer-events:none;">
                         <v-icon :color="replyComment.is_like ? 'red' : 'grey darken-1'">favorite</v-icon>
                       </v-btn>
-                      <v-btn
-                        icon
-                        v-on:click="changeEditReply(replyComment.cid, replyComment.comment)"
-                      >
-                        <v-icon color="grey darken-1">edit</v-icon>
-                      </v-btn>
-                      <v-btn
-                        icon
-                        v-on:click="doDeleteComment(replyComment.cid, replyComment.reply)"
-                        :disabled="replyComment.is_reply"
-                      >
-                        <v-icon color="grey darken-1">delete</v-icon>
-                      </v-btn>
+                      <v-menu offset-y>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            v-on="on"
+                          >
+                            <v-icon color="grey darken-1">more_vert</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-list>
+                          <v-list-tile>
+                            <v-btn
+                              icon
+                              v-on:click="changeEditReply(replyComment.cid, replyComment.comment)"
+                            >
+                              <v-icon color="grey darken-1">edit</v-icon>
+                            </v-btn>
+                            <v-btn
+                              icon
+                              v-on:click="doDeleteComment(replyComment.cid, replyComment.reply)"
+                              :disabled="replyComment.is_reply"
+                            >
+                              <v-icon color="grey darken-1">delete</v-icon>
+                            </v-btn>
+                            <v-btn icon>
+                              <v-icon color="grey darken-1">report</v-icon>
+                            </v-btn>
+                          </v-list-tile>
+                        </v-list>
+                      </v-menu>
                     </div>
                   </v-list-tile>
                 </v-card-actions>
@@ -331,6 +381,14 @@
                       v-on:click="doReplyComment(comment.cid)"
                     >
                       <strong>返信する</strong>
+                    </v-btn>
+                    <v-btn
+                      round
+                      outline
+                      large
+                      v-on:click="() => {isReplyComment = !isReplyComment}"
+                    >
+                      <strong>キャンセル</strong>
                     </v-btn>
                   </v-flex>
                 </v-layout>
