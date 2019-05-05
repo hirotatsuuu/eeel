@@ -82,11 +82,13 @@
           >
             <v-list-tile-title>設定</v-list-tile-title>
           </v-list-tile>
+
           <v-list-tile
-            v-on:click="doLogout"
+            @click.stop="isLogoutDialog = true"
           >
             <v-list-tile-title>ログアウト</v-list-tile-title>
           </v-list-tile>
+
         </v-list>
       </v-menu>
       <v-btn
@@ -97,6 +99,32 @@
         <strong style="margin-left: 3px;">作成</strong>
       </v-btn>
     </v-toolbar>
+    <v-dialog
+      v-model="isLogoutDialog"
+      width="500"
+    >
+      <v-card>
+        <v-card-text>
+          ログアウトしてよろしいですか？
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            flat
+            v-on:click="isLogoutDialog = false"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            color="primary"
+            flat
+            v-on:click="doLogout"
+          >
+            ログアウトする
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -130,7 +158,8 @@ export default {
           url: '',
         }
       ],
-      user: this.$store.getters['user/user']
+      user: this.$store.getters['user/user'],
+      isLogoutDialog: false
     }
   },
   computed: {
@@ -161,6 +190,7 @@ export default {
     doLogout() {
       firebase.auth().signOut()
         .then(() => {
+          this.isLogoutDialog = !this.isLogoutDialog
           this.$store.commit('user/setUser', null)
           this.$router.push("/account/login")
         }).catch((error) => {
