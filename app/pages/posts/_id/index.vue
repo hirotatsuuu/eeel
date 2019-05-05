@@ -225,22 +225,19 @@
                     </template>
                     <v-list>
                       <v-list-tile>
-                          <v-btn
-                            icon
-                            v-on:click="changeEditComment(comment.cid, comment.comment)"
-                          >
-                            <v-icon color="grey darken-1">edit</v-icon>
-                          </v-btn>
-                          <v-btn
-                            icon
-                            v-on:click="doDeleteComment(comment.cid)"
-                            :disabled="comment.is_reply"
-                          >
-                            <v-icon color="grey darken-1">delete</v-icon>
-                          </v-btn>
-                          <v-btn icon>
-                            <v-icon color="grey darken-1">report</v-icon>
-                          </v-btn>
+                        <v-btn
+                          icon
+                          v-on:click="changeEditComment(comment.cid, comment.comment)"
+                        >
+                          <v-icon color="grey darken-1">edit</v-icon>
+                        </v-btn>
+                        <v-btn
+                          icon
+                          v-on:click="doDeleteComment(comment.cid)"
+                          :disabled="comment.is_reply"
+                        >
+                          <v-icon color="grey darken-1">delete</v-icon>
+                        </v-btn>
                       </v-list-tile>
                     </v-list>
                   </v-menu>
@@ -346,9 +343,6 @@
                               :disabled="replyComment.is_reply"
                             >
                               <v-icon color="grey darken-1">delete</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                              <v-icon color="grey darken-1">report</v-icon>
                             </v-btn>
                           </v-list-tile>
                         </v-list>

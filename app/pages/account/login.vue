@@ -5,7 +5,7 @@
           <v-card>
             <v-card-title>
               <v-layout align-center justify-center>
-                  <img src="@/assets/images/logo.png" alt="logo" style="height: 60px;">
+                <img src="@/assets/images/logo.png" alt="logo" style="height: 60px;">
               </v-layout>
             </v-card-title>
             <v-layout align-center justify-center>

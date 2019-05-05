@@ -49,6 +49,48 @@
           >プロフィールを編集する</v-btn>
         </v-layout>
       </v-card-actions>
+      <v-card-text class="pa-0 ma-0">
+        <v-tabs
+          v-model="tabs"
+          fixed-tabs
+          class="mx-3 mt-3"
+        >
+          <v-tab href="#tab-1">
+            <span class="title">挑戦リスト</span>
+          </v-tab>
+          <v-tab href="#tab-2">
+            <span class="title">応援リスト</span>
+          </v-tab>
+        </v-tabs>
+        <v-tabs-items v-model="tabs">
+          <v-tab-item value="tab-1">
+            <v-card flat>
+              <v-card-text>
+                <v-container fluid fill-height>
+                  <v-layout align-center justify-center>
+                    <v-flex xs12 sm8 md4>
+                      <span>まだ挑戦している企画はありません</span>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item value="tab-2">
+            <v-card flat>
+              <v-card-text>
+                <v-container fluid fill-height>
+                  <v-layout align-center justify-center>
+                    <v-flex xs12 sm8 md4>
+                      <span>まだ応援している企画はありません</span>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -62,7 +104,8 @@ export default {
   data() {
     return {
       user: '',
-      info: ''
+      info: '',
+      tabs: null,
     }
   },
   computed: {
