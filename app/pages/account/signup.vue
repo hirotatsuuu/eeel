@@ -1,48 +1,69 @@
 <template>
-  <div style="margin-top: 100px;">
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
-          <v-card>
-            <v-toolbar>
-              <v-toolbar-title>Sign Up</v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form>
-                <v-text-field
-                  v-model="username"
-                  label="username"
-                  prepend-icon="person"
-                ></v-text-field>
-                <v-text-field
-                  v-model="email"
-                  label="email"
-                  prepend-icon="mail"
-                ></v-text-field>
-                <v-text-field
-                  v-model="password"
-                  :append-icon="show_password ? 'visibility' : 'visibility_off'"
-                  :type="show_password ? 'text' : 'password'"
-                  label="password"
-                  prepend-icon="lock"
-                  @click:append="show_password = !show_password"
-                ></v-text-field>
-              </v-form>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                flat
-                v-on:click="gotoLogin"
-              >LOGIN</v-btn>
-              <v-spacer />
+  <div class="pt-5">
+    <v-layout align-center justify-center>
+      <v-flex xs12 sm8 md6 xg4>
+        <v-card>
+          <v-card-title>
+            <v-layout align-center justify-center>
+              <span class="title mt-3">新規登録</span>
+            </v-layout>
+          </v-card-title>
+          <v-card-text class="pb-0">
+            <v-form class="account_form my-0">
+              <v-text-field
+                v-model="username"
+                :counter="32"
+                label="ゆーざねーむ"
+                prepend-icon="person"
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                :counter="32"
+                label="めーるあどれす"
+                prepend-icon="mail"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                :counter="32"
+                :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                :type="show_password ? 'text' : 'password'"
+                label="ぱすわーど"
+                prepend-icon="lock"
+                @click:append="show_password = !show_password"
+              ></v-text-field>
+            </v-form>
+            <v-layout align-center justify-center>
+              <div>
+                <input
+                  type="checkbox"
+                  v-model="termsCheck"
+                >
+              <span style="color: gray;" class="caption"><a href="" style="text-decoration: none; color: black;">利用規約</a>に同意する</span>
+              </div>
+            </v-layout>
+          </v-card-text>
+          <v-card-actions class="pb-0">
+            <v-layout align-center justify-center>
               <v-btn
                 v-on:click="doSignup"
-              >SIGNUP</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
+                large
+                block
+                :dark="termsCheck && !!username && !!email && !!password"
+                class="mx-5"
+                :disabled="!termsCheck || !(!!username) || !(!!email) || !(!!password)"
+              >登録</v-btn>
+            </v-layout>
+          </v-card-actions>
+          <v-layout align-center justify-center>
+            <v-btn
+              v-on:click="gotoLogin"
+              flat
+              small
+            ><span style="color: gray;" class="caption mx-5">ログイン画面に戻る</span></v-btn>
+          </v-layout>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
@@ -56,11 +77,12 @@ export default {
       username: '',
       email: '',
       password: '',
-      show_password: false
+      show_password: false,
+      termsCheck: false
     }
   },
   methods : {
-    doSignup() {
+    doSignup () {
       console.log('doSignup')
       firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then(user => {
@@ -69,7 +91,7 @@ export default {
           alert(error.message)
         })
     },
-    createUser(uid) {
+    createUser (uid) {
       console.log('createUser', uid)
       const user = {
         username: this.username,
@@ -97,9 +119,9 @@ export default {
           console.log('error user: ', error)
         })
     },
-    gotoLogin() {
+    gotoLogin () {
       this.$router.push("/account/login")
-    }
+    },
   }
 }
 </script>

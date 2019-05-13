@@ -6,6 +6,7 @@
     >
       <v-btn
         flat
+        round
         v-on:click="gotoHome"
         style="margin-left: -15px"
       >
@@ -14,6 +15,7 @@
       </v-btn>
       <v-btn
         flat
+        round
         disabled
       >
         <v-icon>notifications</v-icon>
@@ -21,6 +23,7 @@
       </v-btn>
       <v-btn
         flat
+        round
         disabled
       >
         <v-icon>mail</v-icon>
@@ -93,6 +96,7 @@
       </v-menu>
       <v-btn
         dark
+        round
         v-on:click="gotoCreatePost"
       >
         <v-icon>add_circle_outline</v-icon>

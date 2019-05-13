@@ -1,33 +1,33 @@
 <template>
   <div class="pt-5">
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md6 xg4>
-          <v-card>
-            <v-card-title>
-              <v-layout align-center justify-center>
-                <img src="@/assets/images/logo.png" alt="logo" style="height: 60px;">
-              </v-layout>
-            </v-card-title>
+    <v-layout align-center justify-center>
+      <v-flex xs12 sm8 md6 xg4>
+        <v-card>
+          <v-card-title>
             <v-layout align-center justify-center>
+              <img src="@/assets/images/logo.png" alt="logo" style="height: 60px;">
+            </v-layout>
+          </v-card-title>
+          <v-layout align-center justify-center>
             <span style="color: gray;" class="caption">~ 挑戦と応援をつなぐ ~</span>
-              </v-layout>
-            <v-card-text class="pb-0">
-              <v-form class="account_form my-0">
-                <v-text-field
-                  v-model="email"
-                  :counter="32"
-                  label="めーるあどれす"
-                  prepend-icon="email"
-                ></v-text-field>
-                <v-text-field
-                  v-model="password"
-                  :append-icon="show_password ? 'visibility' : 'visibility_off'"
-                  :type="show_password ? 'text' : 'password'"
-                  :counter="32"
-                  label="ぱすわーど"
-                  prepend-icon="lock"
-                  @click:append="show_password = !show_password"
-                ></v-text-field>
+          </v-layout>
+          <v-card-text class="pb-0">
+            <v-form class="account_form my-0">
+              <v-text-field
+                v-model="email"
+                :counter="32"
+                label="めーるあどれす"
+                prepend-icon="email"
+              ></v-text-field>
+              <v-text-field
+                v-model="password"
+                :append-icon="show_password ? 'visibility' : 'visibility_off'"
+                :type="show_password ? 'text' : 'password'"
+                :counter="32"
+                label="ぱすわーど"
+                prepend-icon="lock"
+                @click:append="show_password = !show_password"
+              ></v-text-field>
               <div
                 class="text-xs-right"
               >
@@ -35,31 +35,34 @@
                   v-on:click="gotoResetPassword"
                   flat
                   small
-                ><span style="color: gray;" class="caption">パスワードを忘れた方はこちら</span></v-btn>
-                </div>
-              </v-form>
-            </v-card-text>
-            <v-card-actions class="pb-0">
-              <v-layout align-center justify-center>
+                >
+                  <span style="color: gray;" class="caption">パスワードを忘れた方はこちら</span>
+                </v-btn>
+              </div>
+            </v-form>
+          </v-card-text>
+          <v-card-actions class="pb-0">
+            <v-layout align-center justify-center>
               <v-btn
                 v-on:click="doLogin"
                 large
                 block
-                dark
+                :dark="!!email && !!password"
+                :disabled="!(!!email) || !(!!password)"
                 class="mx-5"
               >ログイン</v-btn>
-              </v-layout>
-            </v-card-actions>
-              <v-layout align-center justify-center>
-              <v-btn
-                v-on:click="gotoSignup"
-                flat
-                small
-              ><span style="color: gray;" class="caption mx-5">新規登録はこちら</span></v-btn>
-              </v-layout>
-          </v-card>
-        </v-flex>
-      </v-layout>
+            </v-layout>
+          </v-card-actions>
+          <v-layout align-center justify-center>
+            <v-btn
+              v-on:click="gotoSignup"
+              flat
+              small
+            ><span style="color: gray;" class="caption mx-5">新規登録はこちら</span></v-btn>
+          </v-layout>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
